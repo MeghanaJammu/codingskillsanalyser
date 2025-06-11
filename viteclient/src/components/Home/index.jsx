@@ -116,7 +116,7 @@ const Home = () => {
         <div className="flex w-full max-w-7xl justify-between items-center gap-16">
           {/* Left Content */}
           <div className="flex-1">
-            <h1 className="text-5xl font-bold leading-tight">
+            <h1 className="text-4xl font-bold leading-tight">
               Boost Your Coding <br />
               Precision with <span className="text-gray-300">AI</span>
             </h1>
@@ -137,8 +137,14 @@ const Home = () => {
             </ul>
           </div>
 
+          <img
+            src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-d168-61f7-8c8b-474dd96168aa/raw?se=2025-06-11T09%3A17%3A27Z&sp=r&sv=2024-08-04&sr=b&scid=518aa3be-6516-50f9-9d4e-2395169b491c&skoid=c953efd6-2ae8-41b4-a6d6-34b1475ac07c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-06-10T12%3A43%3A27Z&ske=2025-06-11T12%3A43%3A27Z&sks=b&skv=2024-08-04&sig=A21G1eqkjyRXxvdo7229PLGWvxX1y/lDurWUHzxu3jo%3D"
+            alt="guycoding"
+            className="w-[400px] h-[400px]"
+          />
+
           {/* Right Box */}
-          <div className="bg-[#242424] rounded-xl p-8 shadow-md w-full max-w-md">
+          <div className="bg-[#171613] rounded-xl p-8 shadow-md w-full max-w-md">
             <h2 className="text-2xl font-bold mb-6 text-center">
               SELECT TOPICS
             </h2>
