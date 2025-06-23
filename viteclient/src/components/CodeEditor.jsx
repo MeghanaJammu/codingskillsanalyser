@@ -2,6 +2,7 @@ import React from "react";
 import { useRef, useState } from "react";
 import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
+import { executeCode } from "../api";
 
 import Editor from "@monaco-editor/react";
 
@@ -26,10 +27,32 @@ const CodeEditor = () => {
     editor.focus();
   };
 
+  const handleRunCode = async () => {
+    const sourceCode = editorRef.current.getValue();
+    if (!sourceCode) return;
+    try {
+      const {} = await executeCode(language, sourceCode);
+    } catch (error) {}
+  };
+
   return (
-    <div className="min-h-screen overflow-y-auto flex flex-col justify-between w-[70vw] bg-[#171628] p-5">
-      <div className="h-[50vh] rounded-md w-full overflow-hidden border border-gray-700">
-        <LanguageSelector language={language} onSelect={onSelect} />
+    <div className="min-h-screen overflow-y-auto flex flex-col justify-between w-[70vw] bg-[#171628]  p-5">
+      <div className="h-[50vh] rounded-md w-full overflow-hidden ">
+        <div className="p-2 flex items-center justify-between  w-full">
+          <LanguageSelector language={language} onSelect={onSelect} />
+          <div className="flex space-x-2">
+            <button
+              onClick={handleRunCode}
+              className="bg-[#2b2b2f] border border-[#7976A2] cursor-pointer text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]"
+            >
+              RUN
+            </button>
+            <button className="bg-[#2b2b2f] border border-[#7976A2] cursor-pointer text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]">
+              Submit
+            </button>
+          </div>
+        </div>
+
         <Editor
           height="100%"
           width="100%"
@@ -41,7 +64,7 @@ const CodeEditor = () => {
           onMount={onMount}
         />
       </div>
-      <div className="min-h-[40vh] mt-4 rounded-lg p-6 relative bg-[#353b45]">
+      <div className="min-h-[40vh] border border-[#7976A2] mt-4 rounded-lg p-6 relative bg-[#333240]">
         <div className="relative flex flex-row justify-end">
           <div className="flex items-center space-x-2">
             <input
@@ -49,7 +72,7 @@ const CodeEditor = () => {
               id="custom"
               checked={isChecked}
               onChange={handleToggle}
-              className="accent-gray-500 w-4 h-4"
+              className="accent-gray-500 cursor-pointer w-4 h-4"
             />
             <label
               htmlFor="custom"
