@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
 import { executeCode } from "../api";
+import { ClipLoader } from "react-spinners";
 
 import Editor from "@monaco-editor/react";
 
@@ -13,6 +14,8 @@ const CodeEditor = () => {
   const [isChecked, setIsChecked] = useState(true);
   const [customInput, setCustomInput] = useState("");
   const [customOutput, setCustomOutput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const handleToggle = () => {
     setIsChecked((prev) => !prev);
@@ -31,8 +34,15 @@ const CodeEditor = () => {
     const sourceCode = editorRef.current.getValue();
     if (!sourceCode) return;
     try {
-      const {} = await executeCode(language, sourceCode);
-    } catch (error) {}
+      setIsLoading(true);
+      const { run } = await executeCode(language, sourceCode, customInput);
+      setCustomOutput(run.output);
+      run.stderr ? setIsError(true) : setIsError(false);
+    } catch (error) {
+      setCustomOutput(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -43,10 +53,16 @@ const CodeEditor = () => {
           <div className="flex space-x-2">
             <button
               onClick={handleRunCode}
-              className="bg-[#2b2b2f] border border-[#7976A2] cursor-pointer text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]"
+              disabled={isLoading}
+              className="bg-[#2b2b2f] border border-[#7976A2] cursor-pointer text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f] flex items-center justify-center min-w-[60px]"
             >
-              RUN
+              {isLoading ? (
+                <ClipLoader color="#36d7b7" loading={isLoading} size={20} />
+              ) : (
+                "RUN"
+              )}
             </button>
+
             <button className="bg-[#2b2b2f] border border-[#7976A2] cursor-pointer text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]">
               Submit
             </button>
@@ -91,22 +107,29 @@ const CodeEditor = () => {
               <textarea
                 id="userInput"
                 rows="4"
-                className="w-full mt-2 p-2 rounded-md bg-[#1e1e2e] text-white border border-gray-600"
+                className="w-full mt-2 p-2 rounded-md bg-[#1e1e2e] text-white border border-[#7976A2]"
                 value={customInput}
                 onChange={(e) => setCustomInput(e.target.value)}
               ></textarea>
             </div>
             <div>
-              <label className="text-white" htmlFor="userOutput">
+              <p className="text-white" htmlFor="userOutput">
                 Output
-              </label>
-              <textarea
+              </p>
+              <div
                 id="userOutput"
-                rows="4"
-                className="w-full mt-2 p-2 rounded-md bg-[#1e1e2e] text-white border border-gray-600"
-                value={customOutput}
-                onChange={(e) => setCustomOutput(e.target.value)}
-              ></textarea>
+                className="w-full min-h-[100px] mt-2 p-2 rounded-md bg-[#1e1e2e] border border-[#7976A2]"
+                style={{
+                  color: isError ? "#dc2626" : "#ffffff",
+                  borderColor: isError ? "#dc2626" : "#ffffff",
+                }}
+              >
+                {customOutput ? (
+                  <pre>{customOutput}</pre>
+                ) : (
+                  "click RUN to view output"
+                )}
+              </div>
             </div>
           </div>
         ) : (
