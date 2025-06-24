@@ -25,7 +25,7 @@ const SolvingHeader = () => {
     <div className="fixed w-screen top-0 left-0 w-full z-50 bg-[#333342] shadow-md border-b border-gray-700 px-6 py-3 flex justify-between items-center">
       {/* Left: Back Button + Title */}
       <div className="flex items-center space-x-2">
-        <button className="text-white hover:text-blue-400">
+        <button className="text-white cursor-pointer hover:text-blue-400">
           <FaArrowLeftLong size={20} />
         </button>
         <h1 className="text-white text-sm sm:text-base font-semibold uppercase tracking-wide">
