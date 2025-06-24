@@ -70,52 +70,55 @@ const CodeEditor = () => {
   };
 
   return (
-    <div className="min-h-screen overflow-y-auto flex flex-col justify-between bg-[#171628] p-5">
-      <div className="h-[50vh] rounded-md w-full overflow-hidden">
-        <div className="p-2 flex items-center justify-between w-full">
+    <div className="min-h-screen bg-[#171628] p-4 sm:p-6 flex flex-col gap-6">
+      {/* Top controls */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 flex-wrap">
+        <div className="w-full sm:w-auto">
           <LanguageSelector language={language} onSelect={onSelect} />
-          <div className="flex space-x-2">
-            <button
-              onClick={handleResetCode}
-              className="bg-[#2b2b2f] border border-[#7976A2] cursor-pointer text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]"
-            >
-              Reset
-            </button>
-            <button
-              onClick={handleRunCode}
-              disabled={isLoading}
-              className="bg-[#2b2b2f] border border-[#7976A2] cursor-pointer text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f] flex items-center justify-center min-w-[60px]"
-            >
-              {isLoading ? (
-                <ClipLoader color="#36d7b7" loading={isLoading} size={20} />
-              ) : (
-                "RUN"
-              )}
-            </button>
-            <button className="bg-[#2b2b2f] border border-[#7976A2] cursor-pointer text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]">
-              Submit
-            </button>
-          </div>
         </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={handleResetCode}
+            className="bg-[#2b2b2f] border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]"
+          >
+            Reset
+          </button>
+          <button
+            onClick={handleRunCode}
+            disabled={isLoading}
+            className="bg-[#2b2b2f] border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f] flex items-center justify-center min-w-[60px]"
+          >
+            {isLoading ? (
+              <ClipLoader color="#36d7b7" loading={isLoading} size={20} />
+            ) : (
+              "RUN"
+            )}
+          </button>
+          <button className="bg-[#2b2b2f] border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]">
+            Submit
+          </button>
+        </div>
+      </div>
 
+      {/* Editor section */}
+      <div className="w-full h-[50vh] border border-[#42375B] rounded-md bg-[#1e1e2e] overflow-hidden">
         {isEditorReady && (
-          <div className="h-full w-full border border-[#7976A2] rounded-md bg-[#1e1e2e] overflow-hidden">
-            <Editor
-              height="100%"
-              width="100%"
-              theme="vs-dark"
-              language={language}
-              value={userCode}
-              onChange={(value) => setUserCode(value)}
-              onMount={onMount}
-            />
-          </div>
+          <Editor
+            height="100%"
+            width="100%"
+            theme="vs-dark"
+            language={language}
+            value={userCode}
+            onChange={(value) => setUserCode(value)}
+            onMount={onMount}
+          />
         )}
       </div>
 
-      <div className="min-h-[40vh] border border-[#7976A2] mt-4 rounded-lg p-6 relative bg-[#333240]">
-        <div className="relative flex flex-row justify-end">
-          <div className="flex items-center space-x-2">
+      {/* Output/Input section */}
+      <div className="w-full border border-[#42375B] rounded-lg p-4 bg-[#333240]">
+        <div className="flex justify-end items-center mb-4">
+          <div className="flex items-center gap-2">
             <input
               type="checkbox"
               id="custom"
@@ -133,7 +136,7 @@ const CodeEditor = () => {
         </div>
 
         {isChecked && (
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-4">
             <div>
               <label className="text-white" htmlFor="userInput">
                 Input
@@ -141,23 +144,25 @@ const CodeEditor = () => {
               <textarea
                 id="userInput"
                 rows="4"
-                className="w-full mt-2 p-2 rounded-md bg-[#1e1e2e] text-[#878791] border border-[#7976A2]"
+                className="w-full mt-2 p-2 rounded-md bg-[#1e1e2e] text-[#878791] border border-[#42375B]"
                 value={customInput}
                 onChange={(e) => setCustomInput(e.target.value)}
               ></textarea>
             </div>
             <div>
-              <p className="text-gray-600">Output</p>
+              <p className="text-gray-300 font-medium">Output</p>
               <div
                 id="userOutput"
                 className="w-full min-h-[100px] mt-2 p-2 rounded-md bg-[#1e1e2e] border"
                 style={{
                   color: isError ? "#dc2626" : "#878791",
-                  borderColor: isError ? "#dc2626" : "#7976A2",
+                  borderColor: isError ? "#dc2626" : "#42375B",
                 }}
               >
                 {customOutput ? (
-                  <pre>{customOutput}</pre>
+                  <pre className="whitespace-pre-wrap break-words">
+                    {customOutput}
+                  </pre>
                 ) : (
                   "Click RUN to view output"
                 )}

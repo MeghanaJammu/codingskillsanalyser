@@ -1,13 +1,9 @@
-import React from "react";
-
+import React, { useState, useRef } from "react";
 import Select from "react-select";
-import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { GiBrain } from "react-icons/gi";
-import { FaArrowTrendUp } from "react-icons/fa6";
+import { FaArrowTrendUp, FaLaptopCode } from "react-icons/fa6";
 import { TbAnalyzeFilled } from "react-icons/tb";
-import { FaLaptopCode } from "react-icons/fa6";
 
 const Home = () => {
   const secondSectionRef = useRef(null);
@@ -34,7 +30,6 @@ const Home = () => {
   };
 
   const [selectedTopics, setSelectedTopics] = useState([]);
-
   const onChangeOptions = (selected) => {
     setSelectedTopics(selected);
     const selectedValues = selected.map((option) => option.value);
@@ -47,10 +42,10 @@ const Home = () => {
 
   return (
     <div className="w-full overflow-x-hidden">
-      {/*Section One*/}
-      <div className="bg-black text-white h-screen w-screen flex flex-col">
-        {/*navigation bar*/}
-        <div className="h-[10vh] flex justify-between items-center px-10 py-2 bg-[#2c2c2c] text-white">
+      {/* Section One */}
+      <div className="bg-black text-white min-h-screen flex flex-col">
+        {/* Navigation */}
+        <div className="h-[7vh] flex justify-between items-center px-6 py-2 bg-[#2c2c2c] text-white">
           <div className="font-semibold text-sm">LOGO/TITLE</div>
           <button
             onClick={onLoggingOut}
@@ -61,13 +56,13 @@ const Home = () => {
         </div>
 
         {/* Main Content */}
-        <div className="flex flex-1 p-10 items-center justify-between">
-          {/* Left Section */}
-          <div className="max-w-xl">
-            <h1 className="text-5xl font-bold leading-snug text-gray-100">
+        <div className="flex flex-col-reverse lg:flex-row flex-1 p-6 md:p-10 items-center justify-between gap-6">
+          {/* Left */}
+          <div className="w-full text-center lg:w-1/2 max-w-xl">
+            <h1 className="text-4xl md:text-5xl font-bold leading-snug text-gray-100">
               Become a better <br /> coder the smarter way
             </h1>
-            <p className="mt-4 text-xl text-gray-400">
+            <p className="mt-4 text-lg md:text-xl text-gray-400">
               Analyze and improve different aspects of <br /> your code using
               AI.
             </p>
@@ -79,72 +74,74 @@ const Home = () => {
             </button>
           </div>
 
-          {/* Right Section */}
-          <div className="relative">
+          {/* Right */}
+          <div className="relative w-full lg:w-1/2 flex justify-center">
             <img
               src="https://t3.ftcdn.net/jpg/12/06/93/54/360_F_1206935418_7DMt53VUEroTnschxh9J0B6kgCL2AHPj.jpg"
               alt="Coder"
-              className="w-[800px] max-w-full h-auto"
+              className="w-full max-w-[700px] h-auto object-contain"
             />
-            <div className="absolute top-25 right-25 rounded-full">
-              <GiBrain className="text-white text-6xl" />
+            <div className="absolute top-10 right-10 rounded-full">
+              <GiBrain className="text-white text-5xl md:text-6xl" />
             </div>
           </div>
         </div>
 
-        {/* Bottom Navigation */}
-        <div className="bg-black border-t border-gray-700 p-10 flex justify-center text-sm">
-          <div className="flex flex-col mr-60 items-center gap-2 text-gray-300">
+        {/* Bottom Steps */}
+        <div className="bg-black border-t border-gray-700 p-6 md:p-10 flex flex-wrap justify-center gap-12 text-sm">
+          <div className="flex flex-col md:mr-20 items-center gap-4 text-gray-300">
             <FaLaptopCode className="text-gray-400 text-4xl" />
             <p className="text-lg font-medium">Write Code</p>
           </div>
-          <div className="flex flex-col mr-60 items-center gap-2 text-gray-300">
+          <div className="flex flex-col md:mr-20 items-center gap-4 text-gray-300">
             <TbAnalyzeFilled className="text-gray-400 text-4xl" />
             <p className="text-lg font-medium">Get Feedback</p>
           </div>
-          <div className="flex flex-col items-center gap-2 text-gray-300">
+          <div className="flex flex-col md:mr-20 items-center gap-4 text-gray-300">
             <FaArrowTrendUp className="text-gray-400 text-4xl" />
             <p className="text-lg font-medium">Improve</p>
           </div>
         </div>
       </div>
 
+      {/* Section Two */}
       <div
         ref={secondSectionRef}
-        className="bg-black min-h-screen w-full flex items-center justify-center px-10 py-10 text-white font-sans"
+        className="min-h-screen bg-black w-full px-4 py-12 pt-25 text-white font-sans"
       >
-        <div className="flex w-full max-w-7xl justify-between items-center gap-16">
-          {/* Left Content */}
+        <div className="flex flex-col-reverse lg:flex-row w-full max-w-7xl mx-auto items-center gap-10">
+          {/* Left */}
           <div className="flex-1">
-            <h1 className="text-4xl font-bold leading-tight">
+            <h1 className="text-3xl md:text-4xl font-bold leading-tight">
               Boost Your Coding <br />
               Precision with <span className="text-gray-300">AI</span>
             </h1>
 
-            <ul className="mt-8 space-y-4 text-lg text-gray-300">
+            <ul className="mt-8 space-y-4 text-base md:text-lg text-gray-300">
               <li className="flex items-center gap-3">
-                <span className="text-green-400 text-3xl">✔</span> Choose
+                <span className="text-green-400 text-2xl">✔</span> Choose
                 Topics
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-green-400 text-3xl">✔</span> Set
+                <span className="text-green-400 text-2xl">✔</span> Set
                 Difficulty & Timer
               </li>
               <li className="flex items-center gap-3">
-                <span className="text-green-400 text-3xl">✔</span> Get Smart
+                <span className="text-green-400 text-2xl">✔</span> Get Smart
                 Feedback Instantly
               </li>
             </ul>
           </div>
 
+          {/* Middle Image */}
           <img
-            src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-d168-61f7-8c8b-474dd96168aa/raw?se=2025-06-11T09%3A17%3A27Z&sp=r&sv=2024-08-04&sr=b&scid=518aa3be-6516-50f9-9d4e-2395169b491c&skoid=c953efd6-2ae8-41b4-a6d6-34b1475ac07c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-06-10T12%3A43%3A27Z&ske=2025-06-11T12%3A43%3A27Z&sks=b&skv=2024-08-04&sig=A21G1eqkjyRXxvdo7229PLGWvxX1y/lDurWUHzxu3jo%3D"
-            alt="guycoding"
-            className="w-[400px] h-[400px]"
+            src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-9f98-61f7-9964-d860305c969d/raw?se=2025-06-24T06%3A27%3A33Z&sp=r&sv=2024-08-04&sr=b&scid=df639a62-cfd4-5cdd-86a0-a835459dfd89&skoid=9ccea605-1409-4478-82eb-9c83b25dc1b0&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-06-24T05%3A23%3A56Z&ske=2025-06-25T05%3A23%3A56Z&sks=b&skv=2024-08-04&sig=raIvt4Enu/2cLW4G%2BIdbDqXaum90/BKzOvpul1qwjz0%3D"
+            alt="guy coding"
+            className="w-full max-w-[400px] h-auto object-contain"
           />
 
-          {/* Right Box */}
-          <div className="bg-[#171613] rounded-xl p-8 shadow-md w-full max-w-md">
+          {/* Right Form */}
+          <div className="bg-[#171613] rounded-xl p-6 md:p-8 shadow-md w-full max-w-md">
             <h2 className="text-2xl font-bold mb-6 text-center">
               SELECT TOPICS
             </h2>
@@ -202,8 +199,8 @@ const Home = () => {
             </div>
 
             <div className="mb-4">
-              <label className="block text-lg font-semibold mb-2 text-gray-300">
-                Number of questions for each level :
+              <label className="block text-base font-semibold mb-2 text-gray-300">
+                Number of questions for each level:
               </label>
               <div className="space-y-2">
                 {["Easy", "Medium", "Hard"].map((level) => (
@@ -226,7 +223,7 @@ const Home = () => {
               <label className="block font-semibold mb-2 text-gray-300">
                 Time Limit (mins)
               </label>
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-6 flex-wrap">
                 <label className="flex items-center gap-2">
                   <input
                     type="radio"
