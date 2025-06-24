@@ -6,7 +6,7 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
-import CodeEditor from "./components/CodeEditor";
+import SolvingPage from "./pages/SolvingPage";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/" element={<Home />} />
-      <Route path="/editor" element={<CodeEditor />} />
+      <Route path="/solve" element={<SolvingPage />} />
     </Routes>
   );
 }

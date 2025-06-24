@@ -79,14 +79,14 @@ const CodeEditor = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={handleResetCode}
-            className="bg-[#2b2b2f] border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]"
+            className="bg-[#2b2b2f] cursor-pointer border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]"
           >
             Reset
           </button>
           <button
             onClick={handleRunCode}
             disabled={isLoading}
-            className="bg-[#2b2b2f] border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f] flex items-center justify-center min-w-[60px]"
+            className="bg-[#2b2b2f] cursor-pointer border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f] flex items-center justify-center min-w-[60px]"
           >
             {isLoading ? (
               <ClipLoader color="#36d7b7" loading={isLoading} size={20} />
@@ -94,7 +94,7 @@ const CodeEditor = () => {
               "RUN"
             )}
           </button>
-          <button className="bg-[#2b2b2f] border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]">
+          <button className="bg-[#2b2b2f] cursor-pointer border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]">
             Submit
           </button>
         </div>

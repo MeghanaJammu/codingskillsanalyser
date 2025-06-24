@@ -14,7 +14,7 @@ const LanguageSelector = (props) => {
     <select
       value={language}
       onChange={handleChange}
-      className="bg-[#5a6f91] border border-[#7976A2]  mb-5 text-lg px-3 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="bg-[#333342] text-gray-200 border border-[#7976A2]  mb-5 text-md px-3 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
     >
       {languages.map(([lang, version]) => (
         <option key={lang} value={lang}>
