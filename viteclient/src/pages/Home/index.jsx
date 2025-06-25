@@ -45,18 +45,18 @@ const Home = () => {
       {/* Section One */}
       <div className="bg-black text-white min-h-screen flex flex-col">
         {/* Navigation */}
-        <div className="h-[7vh] flex justify-between items-center px-6 py-2 bg-[#2c2c2c] text-white">
+        <div className="h-[7vh] flex justify-between items-center px-6 py-2 bg-[#2a495c] text-white">
           <div className="font-semibold text-sm">LOGO/TITLE</div>
           <button
             onClick={onLoggingOut}
-            className="bg-[#3f3f3f] hover:bg-[#5a5a5a] px-4 py-1 rounded-full text-sm"
+            className="bg-[#373c40] cursor-pointer hover:bg-black border border-[#6d8391] px-4 py-1 rounded-md text-sm"
           >
             Logout
           </button>
         </div>
 
         {/* Main Content */}
-        <div className="flex flex-col-reverse lg:flex-row flex-1 p-6 md:p-10 items-center justify-between gap-6">
+        <div className="flex flex-col-reverse lg:flex-row flex-1 p-3 md:py-1  md:px-10 items-center justify-between gap-6">
           {/* Left */}
           <div className="w-full text-center lg:w-1/2 max-w-xl">
             <h1 className="text-4xl md:text-5xl font-bold leading-snug text-gray-100">
@@ -68,7 +68,7 @@ const Home = () => {
             </p>
             <button
               onClick={handleTryNowClick}
-              className="mt-6 bg-[#2d2d2d] hover:bg-[#444] text-white font-medium px-6 py-2 rounded-md"
+              className="mt-6 bg-[#2d2d2d] cursor-pointer hover:bg-[#444] text-white font-medium px-6 py-2 rounded-md"
             >
               Try Now
             </button>
@@ -77,9 +77,9 @@ const Home = () => {
           {/* Right */}
           <div className="relative w-full lg:w-1/2 flex justify-center">
             <img
-              src="https://t3.ftcdn.net/jpg/12/06/93/54/360_F_1206935418_7DMt53VUEroTnschxh9J0B6kgCL2AHPj.jpg"
+              src="https://i.pinimg.com/736x/c6/2f/76/c62f7697ad1ab75b206ae3bf5b3a3caa.jpg"
               alt="Coder"
-              className="w-full max-w-[700px] h-auto object-contain"
+              className="w-full max-w-[350px] filter brightness-50 h-auto object-contain"
             />
             <div className="absolute top-10 right-10 rounded-full">
               <GiBrain className="text-white text-5xl md:text-6xl" />
@@ -91,7 +91,7 @@ const Home = () => {
         <div className="bg-black border-t border-gray-700 p-6 md:p-10 flex flex-wrap justify-center gap-12 text-sm">
           <div className="flex flex-col md:mr-20 items-center gap-4 text-gray-300">
             <FaLaptopCode className="text-gray-400 text-4xl" />
-            <p className="text-lg font-medium">Write Code</p>
+            <p className="text-lg font-medium">Solve Questions</p>
           </div>
           <div className="flex flex-col md:mr-20 items-center gap-4 text-gray-300">
             <TbAnalyzeFilled className="text-gray-400 text-4xl" />
@@ -127,6 +127,10 @@ const Home = () => {
                 Difficulty & Timer
               </li>
               <li className="flex items-center gap-3">
+                <span className="text-green-400 text-2xl">✔</span> Solve and
+                submit
+              </li>
+              <li className="flex items-center gap-3">
                 <span className="text-green-400 text-2xl">✔</span> Get Smart
                 Feedback Instantly
               </li>
@@ -135,9 +139,9 @@ const Home = () => {
 
           {/* Middle Image */}
           <img
-            src="https://sdmntprsouthcentralus.oaiusercontent.com/files/00000000-9f98-61f7-9964-d860305c969d/raw?se=2025-06-24T06%3A27%3A33Z&sp=r&sv=2024-08-04&sr=b&scid=df639a62-cfd4-5cdd-86a0-a835459dfd89&skoid=9ccea605-1409-4478-82eb-9c83b25dc1b0&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-06-24T05%3A23%3A56Z&ske=2025-06-25T05%3A23%3A56Z&sks=b&skv=2024-08-04&sig=raIvt4Enu/2cLW4G%2BIdbDqXaum90/BKzOvpul1qwjz0%3D"
+            src="https://i.pinimg.com/736x/cb/3c/ef/cb3cefbcba842dc7a34c0dfafcf38858.jpg"
             alt="guy coding"
-            className="w-full max-w-[400px] h-auto object-contain"
+            className="w-full max-w-[400px] h-auto object-contain filter brightness-50"
           />
 
           {/* Right Form */}

@@ -1,6 +1,10 @@
-/* Wrap the scrollable content in a class */
 .scrollable-container {
   overflow-y: auto;
+}
+
+/* Track (background behind the thumb) */
+.scrollable-container::-webkit-scrollbar-track {
+  background-color: transparent;
 }
 
 /* Hide scrollbar by default */
@@ -9,18 +13,14 @@
   opacity: 0;
 }
 
-/* Don't show thumb unless hovered */
+/* Thumb (the draggable part) */
 .scrollable-container::-webkit-scrollbar-thumb {
   background-color: transparent;
   border-radius: 8px;
+  transition: background-color 0.3s;
 }
 
-/* Show scrollbar on hover */
+/* Show thumb on hover */
 .scrollable-container:hover::-webkit-scrollbar-thumb {
   background-color: #4b5563;
-}
-
-/* Optional: Add smooth transition */
-.scrollable-container::-webkit-scrollbar-thumb {
-  transition: background-color 0.3s;
 }
