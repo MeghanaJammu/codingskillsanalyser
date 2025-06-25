@@ -1,0 +1,26 @@
+/* Wrap the scrollable content in a class */
+.scrollable-container {
+  overflow-y: auto;
+}
+
+/* Hide scrollbar by default */
+.scrollable-container::-webkit-scrollbar {
+  width: 8px;
+  opacity: 0;
+}
+
+/* Don't show thumb unless hovered */
+.scrollable-container::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 8px;
+}
+
+/* Show scrollbar on hover */
+.scrollable-container:hover::-webkit-scrollbar-thumb {
+  background-color: #4b5563;
+}
+
+/* Optional: Add smooth transition */
+.scrollable-container::-webkit-scrollbar-thumb {
+  transition: background-color 0.3s;
+}
