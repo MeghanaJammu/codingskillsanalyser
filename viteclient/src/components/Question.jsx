@@ -41,7 +41,7 @@ Every index i has a j such that |i - j| <= 2 and nums[j] == key.
       <div className="flex items-center justify-between flex-wrap mb-4">
         <h1 className="text-2xl font-bold">{question.title}</h1>
         <span
-          className={`text-sm px-3 py-1 rounded-full font-semibold ${
+          className={`text-sm sm:mt-6 px-3 py-1 rounded-full font-semibold ${
             question.difficulty === "Easy"
               ? "bg-green-900"
               : question.difficulty === "Medium"

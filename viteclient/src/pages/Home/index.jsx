@@ -10,19 +10,30 @@ const Home = () => {
   const navigate = useNavigate();
 
   const topicOptions = [
+    { value: "arrays", label: "Arrays" },
+    { value: "binarySearch", label: "Binary Search" },
+    { value: "strings", label: "Strings" },
+    { value: "recursion", label: "Recursion" },
+    { value: "linkedLists", label: "Linked Lists" },
+    { value: "bitManipulation", label: "Bit Manipulation" },
+    { value: "math", label: "Math" },
+    { value: "combinatorics", label: "Combinatorics" },
+    {
+      value: "slidingWindowTwoPointers",
+      label: "Sliding Window & Two Pointer",
+    },
+    { value: "greedy", label: "Greedy" },
     { value: "binaryTree", label: "Binary Tree" },
     { value: "binarySearchTree", label: "Binary Search Tree" },
-    { value: "linkedLists", label: "Linked Lists" },
+
     { value: "stacks", label: "Stacks" },
-    { value: "queues", label: "Queues" },
+
     { value: "heaps", label: "Heaps" },
     { value: "sorting", label: "Sorting" },
     { value: "searching", label: "Searching" },
     { value: "graphs", label: "Graphs" },
     { value: "dp", label: "Dynamic Programming" },
-    { value: "recursion", label: "Recursion" },
-    { value: "arrays", label: "Arrays" },
-    { value: "strings", label: "Strings" },
+    { value: "trie", label: "Trie" },
   ];
 
   const handleTryNowClick = () => {

@@ -4,7 +4,7 @@ import CodeEditor from "../../components/CodeEditor";
 import Question from "../../components/Question";
 
 const SolvingPage = () => {
-  const [leftWidth, setLeftWidth] = useState(40); // in %
+  const [leftWidth, setLeftWidth] = useState(42);
   const isResizing = useRef(false);
 
   const startResizing = () => {
@@ -57,7 +57,7 @@ const SolvingPage = () => {
 
         {/* Code Editor Panel */}
         <div className="flex-1 scrollable-container overflow-y-auto h-full bg-[#0f0f1a]">
-          <div className="min-h-full p-4 sm:p-6 flex flex-col gap-6">
+          <div className="min-h-full p-2 sm:p-6 flex flex-col gap-4">
             <CodeEditor />
           </div>
         </div>
