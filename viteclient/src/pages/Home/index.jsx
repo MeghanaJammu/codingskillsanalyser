@@ -10,30 +10,29 @@ const Home = () => {
   const navigate = useNavigate();
 
   const topicOptions = [
-    { value: "arrays", label: "Arrays" },
-    { value: "binarySearch", label: "Binary Search" },
-    { value: "strings", label: "Strings" },
+    { value: "array", label: "Arrays" },
+    { value: "binary_search", label: "Binary Search" },
+    { value: "string", label: "Strings" },
     { value: "recursion", label: "Recursion" },
-    { value: "linkedLists", label: "Linked Lists" },
-    { value: "bitManipulation", label: "Bit Manipulation" },
+    { value: "linked_list", label: "Linked Lists" },
+    { value: "bit_manipulation", label: "Bit Manipulation" },
     { value: "math", label: "Math" },
     { value: "combinatorics", label: "Combinatorics" },
     {
-      value: "slidingWindowTwoPointers",
-      label: "Sliding Window & Two Pointer",
+      value: "sliding_window",
+      label: "Sliding Window",
+    },
+    {
+      value: "two_pointer",
+      label: "Two Pointer",
     },
     { value: "greedy", label: "Greedy" },
-    { value: "binaryTree", label: "Binary Tree" },
-    { value: "binarySearchTree", label: "Binary Search Tree" },
-
-    { value: "stacks", label: "Stacks" },
-
-    { value: "heaps", label: "Heaps" },
-    { value: "sorting", label: "Sorting" },
-    { value: "searching", label: "Searching" },
+    { value: "binary_tree", label: "Binary Tree" },
+    { value: "binary_search_tree", label: "Binary Search Tree" },
+    { value: "stack", label: "Stacks" },
+    { value: "heap", label: "Heaps" },
     { value: "graphs", label: "Graphs" },
     { value: "dp", label: "Dynamic Programming" },
-    { value: "trie", label: "Trie" },
   ];
 
   const handleTryNowClick = () => {
