@@ -11,6 +11,8 @@ __pycache__/
 *.db
 *.log
 
+
+fastapi-venv/
 venv/
 env/
 .venv/
