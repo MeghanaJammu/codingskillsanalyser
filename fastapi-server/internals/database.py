@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 #CREATING DATABASE CONNECTION
 
 #1. creating engine
-SQLALCHEMY_DATABASE_URL = 'sqlite:///./questions.db'
+SQLALCHEMY_DATABASE_URL = 'sqlite:///./app.db'
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={'check_same_thread': False})
 
