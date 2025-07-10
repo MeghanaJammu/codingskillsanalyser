@@ -1,9 +1,10 @@
-import React from "react";
-
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import Cookies from "js-cookie";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../../axios/login";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -12,8 +13,6 @@ const Login = () => {
     const err = {};
     if (!username) {
       err.username = "Username is required";
-    } else if (!/\S+@\S+\.\S+/.test(username)) {
-      err.username = "Enter a valid email";
     }
     if (!password) {
       err.password = "Password is required";
@@ -21,14 +20,24 @@ const Login = () => {
     return err;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
       setErrors({});
-      // Proceed with login
+      try {
+        const data = await login(username, password);
+        console.log("Token:", data.access_token);
+        Cookies.set("token", data.access_token, { expires: 1 / 48 });
+        navigate("/");
+      } catch (error) {
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+        console.error("Login failed:", error.detail);
+      }
       console.log("Logging in with:", { username, password });
     }
   };
@@ -41,7 +50,7 @@ const Login = () => {
         </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[#8F8F90] text-sm text-gray-400 text-left">
+            <label className="block text-sm text-gray-400 text-left">
               USERNAME
             </label>
             <input
@@ -57,7 +66,7 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block text-[#8F8F90] text-sm text-gray-400 text-left">
+            <label className="block text-sm text-gray-400 text-left">
               PASSWORD
             </label>
             <input

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
-import { executeCode } from "../api";
+import { executeCode } from "../axios/editorrun";
 import { ClipLoader } from "react-spinners";
 import Editor from "@monaco-editor/react";
 
