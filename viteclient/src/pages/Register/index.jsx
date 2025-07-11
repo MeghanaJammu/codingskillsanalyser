@@ -1,9 +1,9 @@
-import React from "react";
-
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { register } from "../../axios/register";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -21,7 +21,7 @@ const Register = () => {
     return validationErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = validate();
 
@@ -29,7 +29,17 @@ const Register = () => {
       setErrors(validationErrors);
     } else {
       setErrors({});
-      //API CALL
+      try {
+        const userData = { username, password };
+        const response = await register(userData);
+        console.log(response.data);
+        navigate("/login");
+      } catch (error) {
+        const errMsg =
+          error.response?.data?.detail || "Registration failed. Try again.";
+        setErrors({ username: errMsg });
+        console.error("Register failed:", errMsg);
+      }
       console.log("Registering user:", { username, password });
     }
   };
@@ -47,7 +57,7 @@ const Register = () => {
             </label>
             <input
               type="text"
-              className="w-full px-3 py-2 bg-[#1a1a1f] border border-[#2c2c34] rounded outline-none focus:ring-2 focus:ring-[#444]"
+              className="w-full px-3 py-2 bg-[#1a1a1f] text-white border border-[#2c2c34] rounded outline-none focus:ring-2 focus:ring-[#444]"
               placeholder="Enter your username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -63,7 +73,7 @@ const Register = () => {
             </label>
             <input
               type="password"
-              className="w-full px-3 py-2 bg-[#1a1a1f] border border-[#2c2c34] rounded outline-none focus:ring-2 focus:ring-[#444]"
+              className="w-full px-3 py-2 bg-[#1a1a1f] text-white border border-[#2c2c34] rounded outline-none focus:ring-2 focus:ring-[#444]"
               placeholder="Create a password and enter"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -79,7 +89,7 @@ const Register = () => {
             </label>
             <input
               type="password"
-              className="w-full px-3 py-2 bg-[#1a1a1f] border border-[#2c2c34] rounded outline-none focus:ring-2 focus:ring-[#444]"
+              className="w-full px-3 py-2 bg-[#1a1a1f] text-white border border-[#2c2c34] rounded outline-none focus:ring-2 focus:ring-[#444]"
               placeholder="Confirm your password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
@@ -93,7 +103,7 @@ const Register = () => {
 
           <button
             type="submit"
-            className="w-full py-2 bg-black text-white font-semibold rounded hover:opacity-90 transition"
+            className="w-full cursor-pointer py-2 bg-black text-white font-semibold rounded hover:opacity-90 transition"
           >
             REGISTER
           </button>

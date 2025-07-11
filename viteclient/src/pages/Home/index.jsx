@@ -1,5 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Select from "react-select";
+import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import { GiBrain } from "react-icons/gi";
 import { FaArrowTrendUp, FaLaptopCode } from "react-icons/fa6";
@@ -8,6 +9,13 @@ import { TbAnalyzeFilled } from "react-icons/tb";
 const Home = () => {
   const secondSectionRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const topicOptions = [
     { value: "array", label: "Arrays" },
@@ -47,6 +55,7 @@ const Home = () => {
   };
 
   const onLoggingOut = () => {
+    Cookies.remove("token");
     navigate("/login");
   };
 
