@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from ..internals import models
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 import pandas as pd
 import json
 import ast
@@ -61,24 +62,23 @@ def upload(file, db:Session):
     return {"status": "Questions uploaded successfully"}
 
 
-def get(db: Session):
-    try:
-        questions = db.query(models.Question).all()
-        return [
-            {
-                "id": q.id,
-                "title": q.title,
-                "description": q.description,
-                "difficulty": q.difficulty,
-                "topics": q.topics,
-                "input_format": q.input_format,
-                "output_format": q.output_format,
-                "examples": q.examples,
-                "hidden_cases": q.hidden_cases,
-                "constraints": q.constraints,
-            }
-            for q in questions
-        ]
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to fetch questions: {str(e)}")
+def get(topics, easy_count, medium_count, hard_count, db: Session):
+    result = []
 
+    def get_questions_for_difficulty(diff: str, count: int):
+        if count == 0:
+            return []
+
+        query = db.query(models.Question).filter(models.Question.difficulty == diff)
+
+        if topics:
+            topic_filters = [models.Question.topics.like(f'%"{t}"%') for t in topics]
+            query = query.filter(or_(*topic_filters))
+
+        return query.limit(count).all()
+
+    result += get_questions_for_difficulty("Easy", easy_count)
+    result += get_questions_for_difficulty("Medium", medium_count)
+    result += get_questions_for_difficulty("Hard", hard_count)
+
+    return result

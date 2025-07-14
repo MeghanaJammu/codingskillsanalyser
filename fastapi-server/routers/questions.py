@@ -1,10 +1,11 @@
 # import pandas as pd
 # import json
 # import ast
-from fastapi import APIRouter, UploadFile, Depends
+from fastapi import APIRouter, UploadFile, Depends, Query
 from sqlalchemy.orm import Session
 from ..internals import database
 from ..apirepository import questions
+from typing import List, Optional
 
 router = APIRouter(tags=["Questions"])
 
@@ -75,8 +76,12 @@ async def upload_questions(file: UploadFile, db: Session = Depends(get_db)):
 
 
 @router.get("/get-questions")
-async def get_questions(db: Session = Depends(get_db)):
-    return questions.get(db)
+async def get_questions(topics: Optional[List[str]] = Query(None),
+    easy_count: int = 0,
+    medium_count: int = 0,
+    hard_count: int = 0,
+    db: Session = Depends(get_db)):
+    return questions.get(topics,easy_count, medium_count, hard_count, db)
     # try:
     #     questions = db.query(models.Question).all()
     #     return [

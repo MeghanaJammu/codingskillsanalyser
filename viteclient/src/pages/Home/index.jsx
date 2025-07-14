@@ -26,14 +26,8 @@ const Home = () => {
     { value: "bit_manipulation", label: "Bit Manipulation" },
     { value: "math", label: "Math" },
     { value: "combinatorics", label: "Combinatorics" },
-    {
-      value: "sliding_window",
-      label: "Sliding Window",
-    },
-    {
-      value: "two_pointer",
-      label: "Two Pointer",
-    },
+    { value: "sliding_window", label: "Sliding Window" },
+    { value: "two_pointer", label: "Two Pointer" },
     { value: "greedy", label: "Greedy" },
     { value: "binary_tree", label: "Binary Tree" },
     { value: "binary_search_tree", label: "Binary Search Tree" },
@@ -43,15 +37,32 @@ const Home = () => {
     { value: "dp", label: "Dynamic Programming" },
   ];
 
-  const handleTryNowClick = () => {
-    secondSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   const [selectedTopics, setSelectedTopics] = useState([]);
+  const [difficultyCounts, setDifficultyCounts] = useState({
+    easy: 0,
+    medium: 0,
+    hard: 0,
+  });
+
   const onChangeOptions = (selected) => {
     setSelectedTopics(selected);
-    const selectedValues = selected.map((option) => option.value);
-    console.log("Selected Topics:", selectedValues);
+  };
+
+  const onCountChange = (level, value) => {
+    setDifficultyCounts((prev) => ({
+      ...prev,
+      [level.toLowerCase()]: parseInt(value) || 0,
+    }));
+  };
+
+  const handleStartSolving = () => {
+    const topics = selectedTopics.map((option) => option.value);
+    navigate("/questions", {
+      state: {
+        topics,
+        difficultyCounts,
+      },
+    });
   };
 
   const onLoggingOut = () => {
@@ -86,7 +97,9 @@ const Home = () => {
               AI.
             </p>
             <button
-              onClick={handleTryNowClick}
+              onClick={() =>
+                secondSectionRef.current?.scrollIntoView({ behavior: "smooth" })
+              }
               className="mt-6 bg-[#2d2d2d] cursor-pointer hover:bg-[#444] text-white font-medium px-6 py-2 rounded-md"
             >
               Try Now
@@ -108,18 +121,19 @@ const Home = () => {
 
         {/* Bottom Steps */}
         <div className="bg-black border-t border-gray-700 p-6 md:p-10 flex flex-wrap justify-center gap-12 text-sm">
-          <div className="flex flex-col md:mr-20 items-center gap-4 text-gray-300">
-            <FaLaptopCode className="text-gray-400 text-4xl" />
-            <p className="text-lg font-medium">Solve Questions</p>
-          </div>
-          <div className="flex flex-col md:mr-20 items-center gap-4 text-gray-300">
-            <TbAnalyzeFilled className="text-gray-400 text-4xl" />
-            <p className="text-lg font-medium">Get Feedback</p>
-          </div>
-          <div className="flex flex-col md:mr-20 items-center gap-4 text-gray-300">
-            <FaArrowTrendUp className="text-gray-400 text-4xl" />
-            <p className="text-lg font-medium">Improve</p>
-          </div>
+          {[
+            ["Solve Questions", FaLaptopCode],
+            ["Get Feedback", TbAnalyzeFilled],
+            ["Improve", FaArrowTrendUp],
+          ].map(([label, Icon], idx) => (
+            <div
+              key={idx}
+              className="flex flex-col md:mr-20 items-center gap-4 text-gray-300"
+            >
+              <Icon className="text-gray-400 text-4xl" />
+              <p className="text-lg font-medium">{label}</p>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -188,17 +202,11 @@ const Home = () => {
                     ...styles,
                     backgroundColor: "#333",
                   }),
-                  multiValueLabel: (styles) => ({
-                    ...styles,
-                    color: "white",
-                  }),
+                  multiValueLabel: (styles) => ({ ...styles, color: "white" }),
                   multiValueRemove: (styles) => ({
                     ...styles,
                     color: "white",
-                    ":hover": {
-                      backgroundColor: "#555",
-                      color: "white",
-                    },
+                    ":hover": { backgroundColor: "#555", color: "white" },
                   }),
                   singleValue: (styles) => ({ ...styles, color: "white" }),
                   input: (styles) => ({ ...styles, color: "white" }),
@@ -234,36 +242,20 @@ const Home = () => {
                     <span>{level}</span>
                     <input
                       type="number"
-                      className="w-20 bg-[#1e1e1e] border border-gray-600 px-2 py-1 rounded-md text-white text-right"
                       min="0"
+                      value={difficultyCounts[level.toLowerCase()] || ""}
+                      onChange={(e) => onCountChange(level, e.target.value)}
+                      className="w-20 bg-[#1e1e1e] border border-gray-600 px-2 py-1 rounded-md text-white text-right"
                     />
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="mb-6">
-              <label className="block font-semibold mb-2 text-gray-300">
-                Time Limit (mins)
-              </label>
-              <div className="flex items-center gap-6 flex-wrap">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    name="time"
-                    defaultChecked
-                    className="accent-blue-500"
-                  />
-                  Auto
-                </label>
-                <label className="flex items-center gap-2">
-                  <input type="radio" name="time" className="accent-blue-500" />
-                  Custom
-                </label>
-              </div>
-            </div>
-
-            <button className="w-full bg-[#2d2d2d] hover:bg-[#444] py-2 rounded-md text-lg font-semibold">
+            <button
+              onClick={handleStartSolving}
+              className="w-full bg-[#2d2d2d] cursor-pointer hover:bg-[#444] py-2 rounded-md text-lg font-semibold"
+            >
               Start Solving
             </button>
           </div>
