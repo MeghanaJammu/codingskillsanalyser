@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import List, Optional
 
 class User(BaseModel):
     username: str
@@ -15,3 +16,26 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: str | None = None
+
+
+class Example(BaseModel):
+    input: str
+    formatted_input: str
+    output: str
+    explanation: str
+    image_url: Optional[str]
+
+class HiddenCase(BaseModel):
+    file: str
+    output: str
+
+class Question(BaseModel):
+    title: str
+    description: str
+    difficulty: str
+    topics: List[str]
+    input_format: str
+    output_format: str
+    examples: List[Example]
+    hidden_cases: List[HiddenCase]
+    constraints: str

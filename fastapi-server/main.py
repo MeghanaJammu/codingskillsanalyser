@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .internals import models, database
-from .routers import user, auth
+from .routers import user, auth, questions
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -22,3 +22,4 @@ models.Base.metadata.create_all(database.engine)
 #now to include routers
 app.include_router(user.router)
 app.include_router(auth.router)
+app.include_router(questions.router)

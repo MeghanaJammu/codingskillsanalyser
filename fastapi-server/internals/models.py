@@ -1,5 +1,5 @@
 from .database import Base
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, Text, JSON
 from sqlalchemy.orm import relationship
 
 #here is where we define all our tables
@@ -15,4 +15,16 @@ class User(Base):
     password = Column(String)
 
 
-#Question model, later
+
+class Question(Base):
+    __tablename__ = "questions"
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
+    description = Column(Text)
+    difficulty = Column(String)
+    topics = Column(JSON)
+    input_format = Column(Text)
+    output_format = Column(Text)
+    examples = Column(JSON)
+    hidden_cases = Column(JSON)
+    constraints = Column(Text)
