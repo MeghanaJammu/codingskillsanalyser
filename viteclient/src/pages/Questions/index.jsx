@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { fetchFilteredQuestions } from "../../axios/selectedQuestions";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useTimer } from "../../context/TimerContext";
+
+const { startTimer } = useTimer();
 
 const Questions = () => {
   const [questions, setQuestions] = useState([]);
@@ -15,6 +18,7 @@ const Questions = () => {
       try {
         const data = await fetchFilteredQuestions(topics, difficultyCounts);
         setQuestions(data);
+        startTimer(difficultyCounts);
       } catch (err) {
         console.error("Error fetching questions", err);
       } finally {

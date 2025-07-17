@@ -1,28 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
+import { useTimer } from "../context/TimerContext";
 
 const SolvingHeader = () => {
-  const [secondsLeft, setSecondsLeft] = useState(3600); // 1 hour
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const formatTime = (totalSeconds) => {
-    const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-    const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(
-      2,
-      "0"
-    );
-    const secs = String(totalSeconds % 60).padStart(2, "0");
-    return `${hrs}:${mins}:${secs}`;
-  };
+  const { secondsLeft, formatTime } = useTimer();
 
   return (
-    <div className="fixed w-screen top-0 left-0 w-full z-50 bg-[#333342] shadow-md border-b border-gray-700 px-6 py-3 flex justify-between items-center">
+    <div className="fixed w-screen top-0 left-0 z-50 bg-[#333342] shadow-md border-b border-gray-700 px-6 py-3 flex justify-between items-center">
       {/* Left: Back Button + Title */}
       <div className="flex items-center space-x-2">
         <button className="text-white cursor-pointer hover:text-blue-400">
