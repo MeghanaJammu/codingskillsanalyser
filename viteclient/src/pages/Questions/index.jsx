@@ -3,9 +3,8 @@ import { fetchFilteredQuestions } from "../../axios/selectedQuestions";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTimer } from "../../context/TimerContext";
 
-const { startTimer } = useTimer();
-
 const Questions = () => {
+  const { startTimer } = useTimer();
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
 

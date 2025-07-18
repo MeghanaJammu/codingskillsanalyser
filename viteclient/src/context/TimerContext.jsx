@@ -17,24 +17,39 @@ export const TimerProvider = ({ children }) => {
     return () => clearInterval(timer);
   }, [isActive, secondsLeft]);
 
+  /*initially the isActive is false, when the timer starts first, then this runs and isActive will be true entirely in test*/
   const startTimer = (difficultyCounts) => {
-    const time =
-      (difficultyCounts.easy || 0) * 15 * 60 +
-      (difficultyCounts.medium || 0) * 30 * 60 +
-      (difficultyCounts.hard || 0) * 45 * 60;
-
-    setSecondsLeft(time);
-    setIsActive(true);
+    if (!isActive) {
+      const time =
+        (difficultyCounts.easy || 0) * 15 * 60 +
+        (difficultyCounts.medium || 0) * 30 * 60 +
+        (difficultyCounts.hard || 0) * 45 * 60;
+      console.log(time);
+      setSecondsLeft(time);
+      setIsActive(true);
+    }
   };
 
   const formatTime = (totalSeconds) => {
-    const mins = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
-    const secs = String(totalSeconds % 60).padStart(2, "0");
-    return `${mins}:${secs}`;
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const hStr = String(hours).padStart(2, "0");
+    const mStr = String(minutes).padStart(2, "0");
+    const sStr = String(seconds).padStart(2, "0");
+
+    if (hours > 0) {
+      return `${hStr}:${mStr}:${sStr}`; // HH:MM:SS
+    } else {
+      return `${mStr}:${sStr}`; // MM:SS
+    }
   };
 
   return (
-    <TimerContext.Provider value={{ secondsLeft, startTimer, formatTime }}>
+    <TimerContext.Provider
+      value={{ secondsLeft, isActive, startTimer, formatTime }}
+    >
       {children}
     </TimerContext.Provider>
   );

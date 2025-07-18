@@ -1,19 +1,26 @@
 import React from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useTimer } from "../context/TimerContext";
+import { useQuestion } from "../context/QuestionContext";
+import { useNavigate } from "react-router-dom";
 
 const SolvingHeader = () => {
+  const navigate = useNavigate();
   const { secondsLeft, formatTime } = useTimer();
+  const { question } = useQuestion();
 
   return (
     <div className="fixed w-screen top-0 left-0 z-50 bg-[#333342] shadow-md border-b border-gray-700 px-6 py-3 flex justify-between items-center">
       {/* Left: Back Button + Title */}
       <div className="flex items-center space-x-2">
-        <button className="text-white cursor-pointer hover:text-blue-400">
+        <button
+          onClick={() => navigate(-1)}
+          className="text-white cursor-pointer hover:text-blue-400"
+        >
           <FaArrowLeftLong size={20} />
         </button>
         <h1 className="text-white text-sm sm:text-base font-semibold uppercase tracking-wide">
-          Coding Exercise | K-Distant Indices
+          Coding Exercise | {question?.title || "Loading..."}
         </h1>
       </div>
 

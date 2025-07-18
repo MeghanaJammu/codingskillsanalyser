@@ -39,16 +39,17 @@ def upload(file, db:Session):
             question = models.Question(
                 id=row["id"],
                 title=row["title"],
-                description=row["description"],
+                description=str(row["description"]).replace("_x000D_", "").strip(),  
                 difficulty=row["difficulty"],
                 topics=parse_column(row["topics"], "topics", row["id"]),
-                input_format=row["input_format"],
-                output_format=row["output_format"],
+                input_format=str(row["input_format"]).replace("_x000D_", "").strip(),  
+                output_format=str(row["output_format"]).replace("_x000D_", "").strip(), 
                 examples=parse_column(row["examples"], "examples", row["id"]),
                 hidden_cases=parse_column(row["hidden_cases"], "hidden_cases", row["id"]),
-                constraints=row["constraints"]
+                constraints=str(row["constraints"]).replace("_x000D_", "").strip() 
             )
             db.add(question)
+
 
         except HTTPException as http_ex:
             raise http_ex
@@ -82,3 +83,11 @@ def get(topics, easy_count, medium_count, hard_count, db: Session):
     result += get_questions_for_difficulty("Hard", hard_count)
 
     return result
+
+
+
+def get_one(id: int, db: Session):
+    question = db.query(models.Question).filter(models.Question.id == id).first()
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+    return question
