@@ -2,21 +2,28 @@ import React, { useEffect, useState } from "react";
 import { fetchFilteredQuestions } from "../../axios/selectedQuestions";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTimer } from "../../context/TimerContext";
+import { useQuestion } from "../../context/QuestionContext";
 
 const Questions = () => {
   const { startTimer } = useTimer();
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { questions, setQuestionList, setCurrentIndex } = useQuestion();
 
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const { topics = [], difficultyCounts = {} } = location.state || {};
 
   useEffect(() => {
+    // only fetch if context has no cached questions
+    if (questions.length > 0) {
+      setLoading(false);
+      return;
+    }
+
     const loadQuestions = async () => {
       try {
         const data = await fetchFilteredQuestions(topics, difficultyCounts);
-        setQuestions(data);
+        setQuestionList(data); // store in global context
         startTimer(difficultyCounts);
       } catch (err) {
         console.error("Error fetching questions", err);
@@ -26,7 +33,7 @@ const Questions = () => {
     };
 
     loadQuestions();
-  }, [topics, difficultyCounts]);
+  }, [topics, difficultyCounts, questions, setQuestionList, startTimer]);
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty.toLowerCase()) {
@@ -56,7 +63,7 @@ const Questions = () => {
               </tr>
             </thead>
             <tbody>
-              {questions.map((q) => (
+              {questions.map((q, index) => (
                 <tr
                   key={q.id}
                   className="border-t cursor-pointer border-[#1f2d3d] hover:bg-[#1a2233] transition-all"
@@ -65,16 +72,19 @@ const Questions = () => {
                     {q.title}
                   </td>
                   <td
-                    className={`py-3 px-4 font-semibold ${getDifficultyColor(q.difficulty)}`}
+                    className={`py-3 px-4 font-semibold ${getDifficultyColor(
+                      q.difficulty
+                    )}`}
                   >
                     {q.difficulty}
                   </td>
                   <td className="py-3 px-4 text-right">
                     <button
                       className="text-blue-400 cursor-pointer hover:text-blue-500"
-                      onClick={() =>
-                        navigate(`/question/${q.id}`)
-                      } /*this is the button which navigates user to specific question code editor page*/
+                      onClick={() => {
+                        setCurrentIndex(index);
+                        navigate(`/question/${q.id}`);
+                      }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +104,7 @@ const Questions = () => {
                   </td>
                 </tr>
               ))}
-              {questions.length === 0 && (
+              {questions.length === 0 && !loading && (
                 <tr>
                   <td colSpan="3" className="py-5 text-center text-gray-500">
                     No questions found

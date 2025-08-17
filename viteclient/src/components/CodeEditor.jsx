@@ -4,8 +4,14 @@ import { CODE_SNIPPETS } from "../constants";
 import { executeCode } from "../axios/editorrun";
 import { ClipLoader } from "react-spinners";
 import Editor from "@monaco-editor/react";
+import Examples from "./Examples";
+import { useQuestion } from "../context/QuestionContext";
 
 const CodeEditor = () => {
+  const { question } = useQuestion();
+
+  const examples = question?.examples || [];
+
   const editorRef = useRef();
   const [userCode, setUserCode] = useState("");
   const [isEditorReady, setIsEditorReady] = useState(false);
@@ -15,6 +21,7 @@ const CodeEditor = () => {
   const [customOutput, setCustomOutput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [results, setResults] = useState([]);
 
   const STORAGE_KEY = (lang) => `userCode_${lang}`;
 
@@ -49,12 +56,33 @@ const CodeEditor = () => {
     if (!sourceCode) return;
     try {
       setIsLoading(true);
-      const { run } = await executeCode(language, sourceCode, customInput);
-      setCustomOutput(run.output);
-      setIsError(!!run.stderr);
+
+      if (isChecked) {
+        // Run with custom input
+        const { run } = await executeCode(language, sourceCode, customInput);
+        setCustomOutput(run.output);
+        setIsError(!!run.stderr);
+      } else {
+        // Run all example testcases
+        const newResults = await Promise.all(
+          examples.map(async (ex) => {
+            const { run } = await executeCode(
+              language,
+              sourceCode,
+              ex.formatted_input
+            );
+            return { output: run.output };
+          })
+        );
+        setResults(newResults);
+      }
     } catch (error) {
-      setCustomOutput(error.message || "Execution Error");
-      setIsError(true);
+      if (isChecked) {
+        setCustomOutput(error.message || "Execution Error");
+        setIsError(true);
+      } else {
+        setResults([{ output: error.message || "Execution Error" }]);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -65,6 +93,7 @@ const CodeEditor = () => {
     setUserCode(defaultCode);
     setCustomInput("");
     setCustomOutput("");
+    setResults([]);
     setIsError(false);
     localStorage.setItem(STORAGE_KEY(language), defaultCode);
   };
@@ -115,7 +144,7 @@ const CodeEditor = () => {
         )}
       </div>
 
-      {/* Output/Input section */}
+      {/* Output/Input / Examples section */}
       <div className="w-full border border-[#42375B] rounded-lg p-4 bg-[#333240]">
         <div className="flex justify-end items-center mb-4">
           <div className="flex items-center gap-2">
@@ -135,8 +164,9 @@ const CodeEditor = () => {
           </div>
         </div>
 
-        {isChecked && (
+        {isChecked ? (
           <div className="flex flex-col gap-4">
+            {/* Custom input/output */}
             <div>
               <label className="text-white" htmlFor="userInput">
                 Input
@@ -169,6 +199,9 @@ const CodeEditor = () => {
               </div>
             </div>
           </div>
+        ) : (
+          // Examples Panel instead of custom input
+          <Examples examples={examples} results={results} />
         )}
       </div>
     </div>

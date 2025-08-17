@@ -6,6 +6,17 @@ import { useNavigate } from "react-router-dom";
 
 const SolvingHeader = () => {
   const navigate = useNavigate();
+  const { nextQuestion } = useQuestion();
+
+  const handleNext = () => {
+    const nextQ = nextQuestion();
+    if (nextQ) {
+      navigate(`/question/${nextQ.id}`);
+    } else {
+      navigate("/questions"); // or show results page
+    }
+  };
+
   const { secondsLeft, formatTime } = useTimer();
   const { question } = useQuestion();
 
@@ -29,7 +40,10 @@ const SolvingHeader = () => {
         <div className="text-orange-400 font-mono font-semibold text-lg">
           {formatTime(secondsLeft)}
         </div>
-        <button className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white text-sm px-4 py-1.5 rounded-md font-medium">
+        <button
+          onClick={handleNext}
+          className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white text-sm px-4 py-1.5 rounded-md font-medium"
+        >
           Next Question
         </button>
       </div>
