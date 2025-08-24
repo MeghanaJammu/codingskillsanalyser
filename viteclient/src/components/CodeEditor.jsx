@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
 import { executeCode } from "../axios/editorrun";
+import { evaluateRunCode } from "../axios/evaluateRun";
 import { ClipLoader } from "react-spinners";
 import Editor from "@monaco-editor/react";
 import Examples from "./Examples";
@@ -9,6 +10,7 @@ import { useQuestion } from "../context/QuestionContext";
 
 const CodeEditor = () => {
   const { question } = useQuestion();
+  const qid = question?.id;
 
   const examples = question?.examples || [];
 
@@ -23,19 +25,19 @@ const CodeEditor = () => {
   const [isError, setIsError] = useState(false);
   const [results, setResults] = useState([]);
 
-  const STORAGE_KEY = (lang) => `userCode_${lang}`;
+  const STORAGE_KEY = (qid, lang) => `userCode_${qid}_${lang}`;
 
   useEffect(() => {
-    const savedCode = localStorage.getItem(STORAGE_KEY(language));
+    const savedCode = localStorage.getItem(STORAGE_KEY(qid, language));
     setUserCode(savedCode || CODE_SNIPPETS[language]);
     setIsEditorReady(true);
-  }, [language]);
+  }, [qid, language]);
 
   useEffect(() => {
     if (isEditorReady) {
-      localStorage.setItem(STORAGE_KEY(language), userCode);
+      localStorage.setItem(STORAGE_KEY(qid, language), userCode);
     }
-  }, [userCode, language, isEditorReady]);
+  }, [userCode, qid, language, isEditorReady]);
 
   const handleToggle = () => {
     setIsChecked((prev) => !prev);
@@ -63,18 +65,12 @@ const CodeEditor = () => {
         setCustomOutput(run.output);
         setIsError(!!run.stderr);
       } else {
-        // Run all example testcases
-        const newResults = await Promise.all(
-          examples.map(async (ex) => {
-            const { run } = await executeCode(
-              language,
-              sourceCode,
-              ex.formatted_input
-            );
-            return { output: run.output };
-          })
+        const { results } = await evaluateRunCode(
+          language,
+          sourceCode,
+          examples
         );
-        setResults(newResults);
+        setResults(results);
       }
     } catch (error) {
       if (isChecked) {
@@ -95,7 +91,7 @@ const CodeEditor = () => {
     setCustomOutput("");
     setResults([]);
     setIsError(false);
-    localStorage.setItem(STORAGE_KEY(language), defaultCode);
+    localStorage.setItem(STORAGE_KEY(qid, language), defaultCode);
   };
 
   return (

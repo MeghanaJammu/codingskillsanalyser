@@ -23,7 +23,7 @@ const Examples = ({ examples, results }) => {
           >
             <span>TEST CASE {idx + 1}</span>
             {results.length !== 0 &&
-              (results[idx]?.output.trim() === examples[idx].expected.trim() ? (
+              (results[idx]?.passed ? (
                 <span className="text-green-400">✔</span>
               ) : (
                 <span className="text-red-400">✘</span>
@@ -44,13 +44,13 @@ const Examples = ({ examples, results }) => {
             <div>
               <h3 className="font-semibold text-blue-500 mb-2">Your Output</h3>
               <pre className="bg-[#0d1b2a] p-3 rounded-md text-gray-100 whitespace-pre-wrap">
-                {results[activeTab]?.output}
+                {results[activeTab]?.actual}
               </pre>
             </div>
             <div>
               <h3 className="font-semibold text-blue-500 mb-2">Expected</h3>
               <pre className="bg-[#0d1b2a] p-3 rounded-md text-gray-100 whitespace-pre-wrap">
-                {examples[activeTab]?.expected}
+                {examples[activeTab]?.output}
               </pre>
             </div>
           </div>

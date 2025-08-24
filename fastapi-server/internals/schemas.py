@@ -39,3 +39,13 @@ class Question(BaseModel):
     examples: List[Example]
     hidden_cases: List[HiddenCase]
     constraints: str
+
+class TestCase(BaseModel):
+    formatted_input: str
+    output: str
+
+class EvalRequest(BaseModel):
+    language: str
+    version: str
+    sourceCode: str
+    examples: List[TestCase]

@@ -8,3 +8,4 @@ pyjwt
 python-multipart
 pandas
 openpyxl
+httpx
