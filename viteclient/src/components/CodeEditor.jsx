@@ -3,9 +3,11 @@ import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
 import { executeCode } from "../axios/editorrun";
 import { evaluateRunCode } from "../axios/evaluateRun";
+import { submitCode } from "../axios/evaluateRun";
 import { ClipLoader } from "react-spinners";
 import Editor from "@monaco-editor/react";
 import Examples from "./Examples";
+import SubmissionResults from "./SubmissionResults";
 import { useQuestion } from "../context/QuestionContext";
 
 const CodeEditor = () => {
@@ -24,6 +26,7 @@ const CodeEditor = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [results, setResults] = useState([]);
+  const [isSubmission, setIsSubmission] = useState(false);
 
   const STORAGE_KEY = (qid, lang) => `userCode_${qid}_${lang}`;
 
@@ -54,6 +57,7 @@ const CodeEditor = () => {
   };
 
   const handleRunCode = async () => {
+    setIsSubmission(false);
     const sourceCode = editorRef.current.getValue();
     if (!sourceCode) return;
     try {
@@ -94,6 +98,25 @@ const CodeEditor = () => {
     localStorage.setItem(STORAGE_KEY(qid, language), defaultCode);
   };
 
+  const handleSubmitCode = async () => {
+    setIsSubmission(true);
+    const sourceCode = editorRef.current.getValue();
+    if (!sourceCode) return;
+
+    try {
+      setIsLoading(true);
+      const { results } = await submitCode(sourceCode, language, qid);
+      setResults(results);
+      setCustomOutput("");
+      setIsError(results.some((r) => !r.passed)); // if any testcase failed
+    } catch (error) {
+      setResults([{ output: error.message || "Submission Error" }]);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#171628] p-4 sm:p-6 flex flex-col gap-6">
       {/* Top controls */}
@@ -119,8 +142,16 @@ const CodeEditor = () => {
               "RUN"
             )}
           </button>
-          <button className="bg-[#2b2b2f] cursor-pointer border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]">
-            Submit
+          <button
+            onClick={handleSubmitCode}
+            disabled={isLoading}
+            className="bg-[#2b2b2f] cursor-pointer border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]"
+          >
+            {isLoading ? (
+              <ClipLoader color="#36d7b7" loading={isLoading} size={20} />
+            ) : (
+              "Submit"
+            )}
           </button>
         </div>
       </div>
@@ -195,8 +226,9 @@ const CodeEditor = () => {
               </div>
             </div>
           </div>
+        ) : isSubmission ? (
+          <SubmissionResults results={results} />
         ) : (
-          // Examples Panel instead of custom input
           <Examples examples={examples} results={results} />
         )}
       </div>

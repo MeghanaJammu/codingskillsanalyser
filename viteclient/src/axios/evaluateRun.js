@@ -14,3 +14,13 @@ export const evaluateRunCode = async (language, sourceCode, examples) => {
   });
   return response.data;
 };
+
+export const submitCode = async (sourceCode, language, qid) => {
+  const res = await API.post("/submit", {
+    sourceCode,
+    language,
+    version: LANGUAGE_VERSIONS[language],
+    qid,
+  });
+  return res.data;
+};

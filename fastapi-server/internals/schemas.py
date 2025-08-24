@@ -49,3 +49,10 @@ class EvalRequest(BaseModel):
     version: str
     sourceCode: str
     examples: List[TestCase]
+
+
+class SubmitRequest(BaseModel):
+    language: str
+    sourceCode: str
+    version: str
+    qid: int
