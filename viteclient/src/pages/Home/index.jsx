@@ -5,10 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { GiBrain } from "react-icons/gi";
 import { FaArrowTrendUp, FaLaptopCode } from "react-icons/fa6";
 import { TbAnalyzeFilled } from "react-icons/tb";
+import { useTimer } from "../../context/TimerContext";
 
 const Home = () => {
   const secondSectionRef = useRef(null);
   const navigate = useNavigate();
+  const { startTimer } = useTimer();
 
   useEffect(() => {
     const token = Cookies.get("token");
@@ -37,11 +39,21 @@ const Home = () => {
     { value: "dp", label: "Dynamic Programming" },
   ];
 
-  const [selectedTopics, setSelectedTopics] = useState([]);
-  const [difficultyCounts, setDifficultyCounts] = useState({
-    easy: 0,
-    medium: 0,
-    hard: 0,
+  // Restore selected topics from localStorage
+  const [selectedTopics, setSelectedTopics] = useState(() => {
+    const saved = localStorage.getItem("topics");
+    if (saved) {
+      return JSON.parse(saved)
+        .map((val) => topicOptions.find((opt) => opt.value === val))
+        .filter(Boolean);
+    }
+    return [];
+  });
+
+  // Restore difficulty counts from localStorage
+  const [difficultyCounts, setDifficultyCounts] = useState(() => {
+    const saved = localStorage.getItem("difficultyCounts");
+    return saved ? JSON.parse(saved) : { easy: 0, medium: 0, hard: 0 };
   });
 
   const onChangeOptions = (selected) => {
@@ -57,6 +69,13 @@ const Home = () => {
 
   const handleStartSolving = () => {
     const topics = selectedTopics.map((option) => option.value);
+
+    // Save to localStorage for persistence
+    localStorage.setItem("topics", JSON.stringify(topics));
+    localStorage.setItem("difficultyCounts", JSON.stringify(difficultyCounts));
+
+    startTimer(difficultyCounts);
+
     navigate("/questions", {
       state: {
         topics,

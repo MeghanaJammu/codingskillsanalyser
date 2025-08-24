@@ -1,84 +1,63 @@
-import React from "react";
-import PropTypes from "prop-types";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+import React, { useState } from "react";
+import { useQuestion } from "../context/QuestionContext";
 
 const Examples = ({ examples, results }) => {
-  if (!examples || examples.length === 0) return null;
+  const [activeTab, setActiveTab] = useState(0);
+  console.log(results);
 
   return (
-    <div className="mt-6">
-      <h2 className="text-lg font-semibold mb-3 text-gray-200">Examples</h2>
-      <div className="flex flex-col gap-4">
-        {examples.map((ex, idx) => {
-          const result = results?.[idx]; // link result by index
-          return (
-            <div
-              key={idx}
-              className="bg-[#1a1a2e] p-4 rounded-xl border border-gray-700 shadow-md"
-            >
-              <p className="text-sm text-gray-400 mb-2 font-semibold">
-                Example {idx + 1}
-              </p>
+    <div className="w-full max-w-4xl mx-auto p-4 bg-[#0d1b2a] text-gray-200 rounded-xl shadow-lg">
+      {/* Tabs */}
+      <div className="flex space-x-2 border-b border-gray-600 pb-2">
+        {examples?.map((_, idx) => (
+          <button
+            key={idx}
+            className={`px-3 py-1 rounded-t-md transition ${
+              activeTab === idx
+                ? "bg-[#1b263b] border border-b-0 border-blue-500 text-blue-400"
+                : "bg-[#1b263b] text-gray-400 hover:text-blue-300"
+            } flex items-center space-x-2 cursor-pointer`}
+            onClick={() => setActiveTab(idx)}
+          >
+            <span>TEST CASE {idx + 1}</span>
+            {results.length !== 0 &&
+              (results[idx]?.output.trim() === examples[idx].expected.trim() ? (
+                <span className="text-green-400">✔</span>
+              ) : (
+                <span className="text-red-400">✘</span>
+              ))}
+          </button>
+        ))}
+      </div>
 
-              <p className="mb-1">
-                <span className="font-semibold text-gray-300">Input: </span>
-                <span className="text-gray-100">{ex.formatted_input}</span>
-              </p>
+      {/* Test case content */}
+      <div className="bg-[#1b263b] p-4 rounded-b-md">
+        <h3 className="font-semibold text-blue-500 mb-2">Input</h3>
+        <pre className="bg-[#0d1b2a] p-3 rounded-md text-gray-100 whitespace-pre-wrap">
+          {examples[activeTab]?.input}
+        </pre>
 
-              <p className="mb-1">
-                <span className="font-semibold text-gray-300">Expected: </span>
-                <span className="text-gray-100">{ex.output}</span>
-              </p>
-
-              {ex.explanation && (
-                <p className="mb-2">
-                  <span className="font-semibold text-gray-300">
-                    Explanation:
-                  </span>
-                  <br />
-                  <span className="text-gray-400 whitespace-pre-line">
-                    {ex.explanation.trim()}
-                  </span>
-                </p>
-              )}
-
-              {/* Show runtime output if available */}
-              {result && (
-                <p className="mt-2">
-                  <span className="font-semibold text-gray-300">
-                    Your Output:{" "}
-                  </span>
-                  <span
-                    className={
-                      result.output.trim() === ex.output.trim()
-                        ? "text-green-400"
-                        : "text-red-400"
-                    }
-                  >
-                    {result.output}
-                  </span>
-                </p>
-              )}
+        {results.length !== 0 && (
+          <div className="grid grid-cols-2 gap-4 mt-4">
+            <div>
+              <h3 className="font-semibold text-blue-500 mb-2">Your Output</h3>
+              <pre className="bg-[#0d1b2a] p-3 rounded-md text-gray-100 whitespace-pre-wrap">
+                {results[activeTab]?.output}
+              </pre>
             </div>
-          );
-        })}
+            <div>
+              <h3 className="font-semibold text-blue-500 mb-2">Expected</h3>
+              <pre className="bg-[#0d1b2a] p-3 rounded-md text-gray-100 whitespace-pre-wrap">
+                {examples[activeTab]?.expected}
+              </pre>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
-};
-
-Examples.propTypes = {
-  examples: PropTypes.arrayOf(
-    PropTypes.shape({
-      formatted_input: PropTypes.string,
-      output: PropTypes.string,
-      explanation: PropTypes.string,
-    })
-  ),
-  results: PropTypes.arrayOf(
-    PropTypes.shape({
-      output: PropTypes.string,
-    })
-  ),
 };
 
 export default Examples;

@@ -16,7 +16,7 @@ const CodeEditor = () => {
   const [userCode, setUserCode] = useState("");
   const [isEditorReady, setIsEditorReady] = useState(false);
   const [language, setLanguage] = useState("cpp");
-  const [isChecked, setIsChecked] = useState(true);
+  const [isChecked, setIsChecked] = useState(false);
   const [customInput, setCustomInput] = useState("");
   const [customOutput, setCustomOutput] = useState("");
   const [isLoading, setIsLoading] = useState(false);

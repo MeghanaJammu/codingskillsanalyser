@@ -58,9 +58,8 @@ const Question = () => {
         <h2 className="text-lg font-semibold mb-2">Examples:</h2>
         {question.examples?.map((ex, idx) => (
           <div key={idx} className="mb-4 bg-[#2a2a40] p-4 rounded-md">
-            <p>
-              <span className="font-semibold">Input:</span> {ex.formatted_input}
-            </p>
+            <span className="font-semibold">Input:</span>{" "}
+            <pre>{ex.formatted_input}</pre>
             <p>
               <span className="font-semibold">Output:</span> {ex.output}
             </p>
@@ -73,6 +72,7 @@ const Question = () => {
                 </span>
               </p>
             )}
+            {ex.image_url && <img src={ex.image_url} alt="explain" />}
           </div>
         ))}
       </div>

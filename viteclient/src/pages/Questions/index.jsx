@@ -11,9 +11,27 @@ const Questions = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  const { topics = [], difficultyCounts = {} } = location.state || {};
+  const { topics: stateTopics = [], difficultyCounts: stateDiffs = {} } =
+    location.state || {};
 
   useEffect(() => {
+    // Fallback: load from localStorage if location.state is missing
+    let storedTopics = stateTopics;
+    let storedDiffs = stateDiffs;
+
+    if (
+      (!storedTopics || storedTopics.length === 0) &&
+      localStorage.getItem("topics")
+    ) {
+      storedTopics = JSON.parse(localStorage.getItem("topics"));
+    }
+    if (
+      Object.keys(storedDiffs).length === 0 &&
+      localStorage.getItem("difficultyCounts")
+    ) {
+      storedDiffs = JSON.parse(localStorage.getItem("difficultyCounts"));
+    }
+
     // only fetch if context has no cached questions
     if (questions.length > 0) {
       setLoading(false);
@@ -22,9 +40,13 @@ const Questions = () => {
 
     const loadQuestions = async () => {
       try {
-        const data = await fetchFilteredQuestions(topics, difficultyCounts);
-        setQuestionList(data); // store in global context
-        startTimer(difficultyCounts);
+        const data = await fetchFilteredQuestions(storedTopics, storedDiffs);
+        setQuestionList(data);
+
+        // persist fetched questions
+        localStorage.setItem("questions", JSON.stringify(data));
+
+        startTimer(storedDiffs);
       } catch (err) {
         console.error("Error fetching questions", err);
       } finally {
@@ -32,8 +54,16 @@ const Questions = () => {
       }
     };
 
+    // if already in localStorage, use it
+    if (localStorage.getItem("questions")) {
+      setQuestionList(JSON.parse(localStorage.getItem("questions")));
+      setLoading(false);
+    } else {
+      loadQuestions();
+    }
+
     loadQuestions();
-  }, [topics, difficultyCounts, questions, setQuestionList, startTimer]);
+  }, [stateTopics, stateDiffs, questions, setQuestionList, startTimer]);
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty.toLowerCase()) {
