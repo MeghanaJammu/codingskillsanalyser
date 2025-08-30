@@ -7,7 +7,6 @@ import json
 import ast
 
 
-
 def parse_column(value, field_name, row_id):
     if pd.isna(value) or not str(value).strip():
         return []
@@ -91,3 +90,23 @@ def get_one(id: int, db: Session):
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
     return question
+
+
+def update_question(id: int, updated_data: dict, db: Session):
+    question = db.query(models.Question).filter(models.Question.id == id).first()
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    # Update only provided fields
+    for key, value in updated_data.items():
+        if hasattr(question, key):
+            if isinstance(value, str):
+                cleaned_value = value.replace("_x000D_", "").strip()
+                setattr(question, key, cleaned_value)
+            else:
+                setattr(question, key, value)
+
+    db.commit()
+    db.refresh(question)
+    return question
+

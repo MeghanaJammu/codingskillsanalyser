@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, Depends, Query
+from fastapi import APIRouter, UploadFile, Depends, Query, Body
 from sqlalchemy.orm import Session
 from ..internals import database
 from ..apirepository import questions
@@ -36,3 +36,8 @@ async def get_questions(topics: Optional[List[str]] = Query(None),
 @router.get("/question/{id}")
 async def get_question(id: int, db: Session = Depends(get_db)):
     return questions.get_one(id, db)
+
+
+@router.put("/question/{id}")
+async def update_question(id: int, updated_data: dict = Body(...),  db: Session = Depends(get_db)):
+    return questions.update_question(id, updated_data, db)

@@ -8,6 +8,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState("");
 
   const validate = () => {
     const err = {};
@@ -25,14 +26,17 @@ const Login = () => {
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
+      setServerError("");
     } else {
       setErrors({});
+      setServerError("");
       try {
         const data = await login(username, password);
         console.log("Token:", data.access_token);
         Cookies.set("token", data.access_token, { expires: 1 / 48 });
         navigate("/");
       } catch (error) {
+        setServerError(error.response?.data?.detail || "Login failed");
         console.log(error.response.data);
         console.log(error.response.status);
         console.log(error.response.headers);
@@ -78,6 +82,11 @@ const Login = () => {
             />
             {errors.password && (
               <p className="text-sm text-red-500 mt-1">{errors.password}</p>
+            )}
+            {serverError && (
+              <p className="text-sm text-red-500 mt-2 text-center">
+                {serverError}
+              </p>
             )}
           </div>
 
