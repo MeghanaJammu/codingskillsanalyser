@@ -1,9 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { fetchQuestionById } from "../axios/solvingQuestion";
-
-const LS_QUESTIONS = "questions";
-const LS_CURRENT_INDEX = "currentIndex";
+import Cookies from "js-cookie";
 
 const QuestionContext = createContext();
 export const useQuestion = () => useContext(QuestionContext);
@@ -17,14 +15,25 @@ const safeParse = (str, fallback) => {
   }
 };
 
+// Build localStorage keys per user
+const getLSKeys = () => {
+  const username = Cookies.get("username") || "guest";
+  return {
+    questions: `questions_${username}`,
+    currentIndex: `currentIndex_${username}`,
+  };
+};
+
 export const QuestionProvider = ({ id, children }) => {
+  const LS_KEYS = getLSKeys();
+
   const bootQuestions = (() => {
-    const raw = localStorage.getItem(LS_QUESTIONS);
+    const raw = localStorage.getItem(LS_KEYS.questions);
     return raw ? safeParse(raw, []) : [];
   })();
 
   const bootIndex = (() => {
-    const raw = localStorage.getItem(LS_CURRENT_INDEX);
+    const raw = localStorage.getItem(LS_KEYS.currentIndex);
     const n = Number(raw);
     return Number.isInteger(n) && n >= 0 ? n : 0;
   })();
@@ -41,13 +50,13 @@ export const QuestionProvider = ({ id, children }) => {
 
   const setQuestionList = (qList) => setQuestions(qList);
 
-  // keep localStorage in sync
+  // keep localStorage in sync (per-user)
   useEffect(() => {
     if (questions.length > 0) {
-      localStorage.setItem(LS_QUESTIONS, JSON.stringify(questions));
+      localStorage.setItem(LS_KEYS.questions, JSON.stringify(questions));
     }
-    localStorage.setItem(LS_CURRENT_INDEX, String(currentIndex));
-  }, [questions, currentIndex]);
+    localStorage.setItem(LS_KEYS.currentIndex, String(currentIndex));
+  }, [questions, currentIndex, LS_KEYS]);
 
   // derive current question from list + index
   useEffect(() => {
@@ -90,8 +99,8 @@ export const QuestionProvider = ({ id, children }) => {
 
   // optional: call later when test finishes
   const clearSession = () => {
-    localStorage.removeItem(LS_QUESTIONS);
-    localStorage.removeItem(LS_CURRENT_INDEX);
+    localStorage.removeItem(LS_KEYS.questions);
+    localStorage.removeItem(LS_KEYS.currentIndex);
     setQuestions([]);
     setCurrentIndex(0);
     setQuestion(null);
@@ -107,7 +116,7 @@ export const QuestionProvider = ({ id, children }) => {
         currentIndex,
         setCurrentIndex,
         nextQuestion,
-        clearSession, // for later use
+        clearSession,
       }}
     >
       {children}

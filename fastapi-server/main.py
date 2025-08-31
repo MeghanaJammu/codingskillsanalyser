@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .internals import models, database
-from .routers import user, auth, questions, run, submit, tests
+from .routers import user, auth, questions, run, submit
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -25,4 +25,3 @@ app.include_router(auth.router)
 app.include_router(questions.router)
 app.include_router(run.router)
 app.include_router(submit.router)
-app.include_router(tests.router)

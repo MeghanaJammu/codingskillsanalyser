@@ -58,7 +58,7 @@ const Register = () => {
             <input
               type="text"
               className="w-full px-3 py-2 bg-[#1a1a1f] text-white border border-[#2c2c34] rounded outline-none focus:ring-2 focus:ring-[#444]"
-              placeholder="Enter your username"
+              placeholder="Enter your (unique) username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />

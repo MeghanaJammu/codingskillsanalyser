@@ -15,6 +15,7 @@ const CodeEditor = () => {
   const qid = question?.id;
 
   const examples = question?.examples || [];
+  const username = localStorage.getItem("username"); // get active user
 
   const editorRef = useRef();
   const [userCode, setUserCode] = useState("");
@@ -23,24 +24,44 @@ const CodeEditor = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [customInput, setCustomInput] = useState("");
   const [customOutput, setCustomOutput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [results, setResults] = useState([]);
+
+  // ✅ separate loading states
+  const [isRunLoading, setIsRunLoading] = useState(false);
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
+
+  // ✅ separate results for run vs submit
+  const [runResults, setRunResults] = useState([]);
+  const [submitResults, setSubmitResults] = useState([]);
   const [isSubmission, setIsSubmission] = useState(false);
 
-  const STORAGE_KEY = (qid, lang) => `userCode_${qid}_${lang}`;
+  // storage key includes username, qid, and language
+  const STORAGE_KEY = (qid, lang) => `${username}_userCode_${qid}_${lang}`;
 
+  // restore saved code when question/language changes
   useEffect(() => {
+    if (!qid || !username) return;
     const savedCode = localStorage.getItem(STORAGE_KEY(qid, language));
     setUserCode(savedCode || CODE_SNIPPETS[language]);
     setIsEditorReady(true);
-  }, [qid, language]);
+  }, [qid, language, username]);
 
+  // reset results when moving to new question
   useEffect(() => {
-    if (isEditorReady) {
+    if (!qid) return;
+    setRunResults([]);
+    setSubmitResults([]);
+    setIsSubmission(false);
+    setCustomOutput("");
+    setIsError(false);
+  }, [qid]);
+
+  // save whenever code changes
+  useEffect(() => {
+    if (isEditorReady && qid && username) {
       localStorage.setItem(STORAGE_KEY(qid, language), userCode);
     }
-  }, [userCode, qid, language, isEditorReady]);
+  }, [userCode, qid, language, isEditorReady, username]);
 
   const handleToggle = () => {
     setIsChecked((prev) => !prev);
@@ -60,8 +81,14 @@ const CodeEditor = () => {
     setIsSubmission(false);
     const sourceCode = editorRef.current.getValue();
     if (!sourceCode) return;
+
+    // persist immediately when user runs code
+    if (qid && username) {
+      localStorage.setItem(STORAGE_KEY(qid, language), sourceCode);
+    }
+
     try {
-      setIsLoading(true);
+      setIsRunLoading(true);
 
       if (isChecked) {
         // Run with custom input
@@ -74,17 +101,17 @@ const CodeEditor = () => {
           sourceCode,
           examples
         );
-        setResults(results);
+        setRunResults(results);
       }
     } catch (error) {
       if (isChecked) {
         setCustomOutput(error.message || "Execution Error");
         setIsError(true);
       } else {
-        setResults([{ output: error.message || "Execution Error" }]);
+        setRunResults([{ output: error.message || "Execution Error" }]);
       }
     } finally {
-      setIsLoading(false);
+      setIsRunLoading(false);
     }
   };
 
@@ -93,9 +120,12 @@ const CodeEditor = () => {
     setUserCode(defaultCode);
     setCustomInput("");
     setCustomOutput("");
-    setResults([]);
+    setRunResults([]);
+    setSubmitResults([]);
     setIsError(false);
-    localStorage.setItem(STORAGE_KEY(qid, language), defaultCode);
+    if (qid && username) {
+      localStorage.setItem(STORAGE_KEY(qid, language), defaultCode);
+    }
   };
 
   const handleSubmitCode = async () => {
@@ -103,17 +133,22 @@ const CodeEditor = () => {
     const sourceCode = editorRef.current.getValue();
     if (!sourceCode) return;
 
+    // persist when user submits too
+    if (qid && username) {
+      localStorage.setItem(STORAGE_KEY(qid, language), sourceCode);
+    }
+
     try {
-      setIsLoading(true);
+      setIsSubmitLoading(true);
       const { results } = await submitCode(sourceCode, language, qid);
-      setResults(results);
+      setSubmitResults(results);
       setCustomOutput("");
       setIsError(results.some((r) => !r.passed)); // if any testcase failed
     } catch (error) {
-      setResults([{ output: error.message || "Submission Error" }]);
+      setSubmitResults([{ output: error.message || "Submission Error" }]);
       setIsError(true);
     } finally {
-      setIsLoading(false);
+      setIsSubmitLoading(false);
     }
   };
 
@@ -133,22 +168,22 @@ const CodeEditor = () => {
           </button>
           <button
             onClick={handleRunCode}
-            disabled={isLoading}
+            disabled={isRunLoading}
             className="bg-[#2b2b2f] cursor-pointer border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f] flex items-center justify-center min-w-[60px]"
           >
-            {isLoading ? (
-              <ClipLoader color="#36d7b7" loading={isLoading} size={20} />
+            {isRunLoading ? (
+              <ClipLoader color="#36d7b7" loading={isRunLoading} size={20} />
             ) : (
               "RUN"
             )}
           </button>
           <button
             onClick={handleSubmitCode}
-            disabled={isLoading}
+            disabled={isSubmitLoading}
             className="bg-[#2b2b2f] cursor-pointer border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]"
           >
-            {isLoading ? (
-              <ClipLoader color="#36d7b7" loading={isLoading} size={20} />
+            {isSubmitLoading ? (
+              <ClipLoader color="#36d7b7" loading={isSubmitLoading} size={20} />
             ) : (
               "Submit"
             )}
@@ -227,9 +262,15 @@ const CodeEditor = () => {
             </div>
           </div>
         ) : isSubmission ? (
-          <SubmissionResults results={results} />
+          isSubmitLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <ClipLoader color="#36d7b7" loading={true} size={40} />
+            </div>
+          ) : (
+            <SubmissionResults results={submitResults} />
+          )
         ) : (
-          <Examples examples={examples} results={results} />
+          <Examples examples={examples} results={runResults} />
         )}
       </div>
     </div>

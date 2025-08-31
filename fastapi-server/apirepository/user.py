@@ -3,7 +3,6 @@ from ..internals import schemas, models, hashing
 from sqlalchemy.orm import Session
 
 
-
 def create_user(request: schemas.User, db: Session):
     # Check if user with same username already exists
     existing_user = db.query(models.User).filter(models.User.username == request.username).first()
@@ -29,3 +28,5 @@ def get_user(id: int, db: Session):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"User with id {id} is not found")
     
     return user
+
+

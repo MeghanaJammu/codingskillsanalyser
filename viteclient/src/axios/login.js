@@ -13,3 +13,5 @@ export const login = async (username, password) => {
 
   return res.data;
 };
+
+export const getUser = () => {};

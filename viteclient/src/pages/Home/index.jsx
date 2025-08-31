@@ -39,20 +39,13 @@ const Home = () => {
     { value: "dp", label: "Dynamic Programming" },
   ];
 
-  // Restore selected topics from localStorage
-  const [selectedTopics, setSelectedTopics] = useState(() => {
-    const saved = localStorage.getItem("topics");
-    if (saved) {
-      return JSON.parse(saved)
-        .map((val) => topicOptions.find((opt) => opt.value === val))
-        .filter(Boolean);
-    }
-    return [];
-  });
+  const username = localStorage.getItem("username");
 
-  // Restore difficulty counts from localStorage
+  const [selectedTopics, setSelectedTopics] = useState([]);
+
+  // Restore difficulty counts (user-specific)
   const [difficultyCounts, setDifficultyCounts] = useState(() => {
-    const saved = localStorage.getItem("difficultyCounts");
+    const saved = localStorage.getItem(`${username}_difficultyCounts`);
     return saved ? JSON.parse(saved) : { easy: 0, medium: 0, hard: 0 };
   });
 
@@ -70,9 +63,14 @@ const Home = () => {
   const handleStartSolving = () => {
     const topics = selectedTopics.map((option) => option.value);
 
-    // Save to localStorage for persistence
-    localStorage.setItem("topics", JSON.stringify(topics));
-    localStorage.setItem("difficultyCounts", JSON.stringify(difficultyCounts));
+    // Save user-specific keys in localStorage
+    if (username) {
+      localStorage.setItem(`${username}_topics`, JSON.stringify(topics));
+      localStorage.setItem(
+        `${username}_difficultyCounts`,
+        JSON.stringify(difficultyCounts)
+      );
+    }
 
     startTimer(difficultyCounts);
 
@@ -275,7 +273,7 @@ const Home = () => {
               onClick={handleStartSolving}
               className="w-full bg-[#2d2d2d] cursor-pointer hover:bg-[#444] py-2 rounded-md text-lg font-semibold"
             >
-              Start Test
+              Start Solving
             </button>
           </div>
         </div>

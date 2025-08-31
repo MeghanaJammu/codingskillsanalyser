@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Cookies from "js-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../../axios/login";
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,7 +33,10 @@ const Login = () => {
       setServerError("");
       try {
         const data = await login(username, password);
+        console.log(data);
         console.log("Token:", data.access_token);
+        const decoded = jwtDecode(data.access_token);
+        localStorage.setItem("username", decoded.sub);
         Cookies.set("token", data.access_token, { expires: 1 / 48 });
         navigate("/");
       } catch (error) {

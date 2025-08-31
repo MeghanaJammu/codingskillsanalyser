@@ -1,19 +1,28 @@
 /* eslint-disable react/prop-types */
 import React, { createContext, useState, useEffect, useContext } from "react";
+import Cookies from "js-cookie";
 
 const TimerContext = createContext();
 
-const LS_ENDTIME = "timer_endTime";
-const LS_ACTIVE = "timer_isActive";
+// Build per-user localStorage keys
+const getLSKeys = () => {
+  const username = Cookies.get("username") || "guest";
+  return {
+    endTime: `timer_endTime_${username}`,
+    active: `timer_isActive_${username}`,
+  };
+};
 
 export const TimerProvider = ({ children }) => {
+  const LS_KEYS = getLSKeys();
+
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [isActive, setIsActive] = useState(false);
 
   // On mount, restore from localStorage
   useEffect(() => {
-    const storedEndTime = localStorage.getItem(LS_ENDTIME);
-    const storedActive = localStorage.getItem(LS_ACTIVE) === "true";
+    const storedEndTime = localStorage.getItem(LS_KEYS.endTime);
+    const storedActive = localStorage.getItem(LS_KEYS.active) === "true";
 
     if (storedActive && storedEndTime) {
       const now = Date.now();
@@ -26,11 +35,11 @@ export const TimerProvider = ({ children }) => {
         // timer expired
         setSecondsLeft(0);
         setIsActive(false);
-        localStorage.removeItem(LS_ENDTIME);
-        localStorage.removeItem(LS_ACTIVE);
+        localStorage.removeItem(LS_KEYS.endTime);
+        localStorage.removeItem(LS_KEYS.active);
       }
     }
-  }, []);
+  }, [LS_KEYS]);
 
   // Countdown effect
   useEffect(() => {
@@ -41,8 +50,8 @@ export const TimerProvider = ({ children }) => {
           if (prev <= 1) {
             clearInterval(timer);
             setIsActive(false);
-            localStorage.removeItem(LS_ENDTIME);
-            localStorage.removeItem(LS_ACTIVE);
+            localStorage.removeItem(LS_KEYS.endTime);
+            localStorage.removeItem(LS_KEYS.active);
             return 0;
           }
           return prev - 1;
@@ -50,7 +59,7 @@ export const TimerProvider = ({ children }) => {
       }, 1000);
     }
     return () => clearInterval(timer);
-  }, [isActive, secondsLeft]);
+  }, [isActive, secondsLeft, LS_KEYS]);
 
   const startTimer = (difficultyCounts) => {
     if (!isActive) {
@@ -63,8 +72,8 @@ export const TimerProvider = ({ children }) => {
       setIsActive(true);
 
       const endTime = Date.now() + time * 1000;
-      localStorage.setItem(LS_ENDTIME, endTime.toString());
-      localStorage.setItem(LS_ACTIVE, "true");
+      localStorage.setItem(LS_KEYS.endTime, endTime.toString());
+      localStorage.setItem(LS_KEYS.active, "true");
     }
   };
 

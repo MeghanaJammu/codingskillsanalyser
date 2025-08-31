@@ -3,6 +3,7 @@ import { fetchFilteredQuestions } from "../../axios/selectedQuestions";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTimer } from "../../context/TimerContext";
 import { useQuestion } from "../../context/QuestionContext";
+import Cookies from "js-cookie";
 
 const Questions = () => {
   const { startTimer } = useTimer();
@@ -14,6 +15,16 @@ const Questions = () => {
   const { topics: stateTopics = [], difficultyCounts: stateDiffs = {} } =
     location.state || {};
 
+  // fetch username from localStorage
+  const username = localStorage.getItem("username");
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   useEffect(() => {
     // Fallback: load from localStorage if location.state is missing
     let storedTopics = stateTopics;
@@ -21,15 +32,20 @@ const Questions = () => {
 
     if (
       (!storedTopics || storedTopics.length === 0) &&
-      localStorage.getItem("topics")
+      username &&
+      localStorage.getItem(`${username}_topics`)
     ) {
-      storedTopics = JSON.parse(localStorage.getItem("topics"));
+      storedTopics = JSON.parse(localStorage.getItem(`${username}_topics`));
     }
+
     if (
       Object.keys(storedDiffs).length === 0 &&
-      localStorage.getItem("difficultyCounts")
+      username &&
+      localStorage.getItem(`${username}_difficultyCounts`)
     ) {
-      storedDiffs = JSON.parse(localStorage.getItem("difficultyCounts"));
+      storedDiffs = JSON.parse(
+        localStorage.getItem(`${username}_difficultyCounts`)
+      );
     }
 
     // only fetch if context has no cached questions
@@ -43,8 +59,10 @@ const Questions = () => {
         const data = await fetchFilteredQuestions(storedTopics, storedDiffs);
         setQuestionList(data);
 
-        // persist fetched questions
-        localStorage.setItem("questions", JSON.stringify(data));
+        // persist fetched questions (user-specific)
+        if (username) {
+          localStorage.setItem(`${username}_questions`, JSON.stringify(data));
+        }
 
         startTimer(storedDiffs);
       } catch (err) {
@@ -54,16 +72,23 @@ const Questions = () => {
       }
     };
 
-    // if already in localStorage, use it
-    if (localStorage.getItem("questions")) {
-      setQuestionList(JSON.parse(localStorage.getItem("questions")));
+    // if already in localStorage (user-specific), use it
+    if (username && localStorage.getItem(`${username}_questions`)) {
+      setQuestionList(
+        JSON.parse(localStorage.getItem(`${username}_questions`))
+      );
       setLoading(false);
     } else {
       loadQuestions();
     }
-
-    loadQuestions();
-  }, [stateTopics, stateDiffs, questions, setQuestionList, startTimer]);
+  }, [
+    stateTopics,
+    stateDiffs,
+    questions,
+    setQuestionList,
+    startTimer,
+    username,
+  ]);
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty.toLowerCase()) {
@@ -80,69 +105,87 @@ const Questions = () => {
 
   return (
     <div className="w-full min-h-screen bg-[#0e1726] text-white py-10 px-4">
-      <div className="w-full max-w-5xl mx-auto">
+      <div className="w-full max-w-5xl mx-auto flex flex-col items-center">
         {loading ? (
           <p className="text-gray-400 text-center">Loading questions...</p>
         ) : (
-          <table className="w-full rounded-lg overflow-hidden border border-[#1f2d3d]">
-            <thead className="bg-[#1e293b] text-gray-300">
-              <tr>
-                <th className="py-3 px-4 text-left">QUESTION</th>
-                <th className="py-3 px-4 text-left">DIFFICULTY</th>
-                <th className="py-3 px-4 text-right">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {questions.map((q, index) => (
-                <tr
-                  key={q.id}
-                  className="border-t cursor-pointer border-[#1f2d3d] hover:bg-[#1a2233] transition-all"
-                >
-                  <td className="py-3 px-4 text-blue-400 font-medium">
-                    {q.title}
-                  </td>
-                  <td
-                    className={`py-3 px-4 font-semibold ${getDifficultyColor(
-                      q.difficulty
-                    )}`}
-                  >
-                    {q.difficulty}
-                  </td>
-                  <td className="py-3 px-4 text-right">
-                    <button
-                      className="text-blue-400 cursor-pointer hover:text-blue-500"
-                      onClick={() => {
-                        setCurrentIndex(index);
-                        navigate(`/question/${q.id}`);
-                      }}
+          <>
+            <div className="w-full overflow-x-auto">
+              <table className="w-full rounded-lg overflow-hidden border border-[#1f2d3d]">
+                <thead className="bg-[#1e293b] text-gray-300">
+                  <tr>
+                    <th className="py-3 px-4 text-left">QUESTION</th>
+                    <th className="py-3 px-4 text-left">DIFFICULTY</th>
+                    <th className="py-3 px-4 text-right">ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {questions.map((q, index) => (
+                    <tr
+                      key={q.id}
+                      className="border-t cursor-pointer border-[#1f2d3d] hover:bg-[#1a2233] transition-all"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-5 h-5 inline-block"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                      <td className="py-3 px-4 text-blue-400 font-medium">
+                        {q.title}
+                      </td>
+                      <td
+                        className={`py-3 px-4 font-semibold ${getDifficultyColor(
+                          q.difficulty
+                        )}`}
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {questions.length === 0 && !loading && (
-                <tr>
-                  <td colSpan="3" className="py-5 text-center text-gray-500">
-                    No questions found
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                        {q.difficulty}
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <button
+                          className="text-blue-400 cursor-pointer hover:text-blue-500"
+                          onClick={() => {
+                            setCurrentIndex(index);
+                            navigate(`/question/${q.id}`);
+                          }}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-5 h-5 inline-block"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                  {questions.length === 0 && !loading && (
+                    <tr>
+                      <td
+                        colSpan="3"
+                        className="py-5 text-center text-gray-500"
+                      >
+                        No questions found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-6 w-full flex justify-center">
+              <button
+                onClick={() => {}}
+                className="bg-red-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md 
+                       hover:bg-red-700 active:bg-red-800 focus:outline-none focus:ring-2 
+                       focus:ring-red-400 focus:ring-opacity-50 transition-colors duration-200"
+              >
+                End Test
+              </button>
+            </div>
+          </>
         )}
       </div>
     </div>
