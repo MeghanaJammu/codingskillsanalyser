@@ -1,8 +1,9 @@
 from fastapi import APIRouter, UploadFile, Depends, Query, Body
 from sqlalchemy.orm import Session
-from ..internals import database
+from ..internals import database, auth_utils
 from ..apirepository import questions
 from typing import List, Optional
+
 
 router = APIRouter(tags=["Questions"])
 

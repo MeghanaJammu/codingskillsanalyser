@@ -1,6 +1,8 @@
 import os
 import httpx
 from fastapi import HTTPException
+from ..internals import models
+from sqlalchemy.orm import Session
 import json
 import traceback
 
@@ -78,3 +80,24 @@ async def evaluate_submit(req, question):
         print("Unexpected error in evaluate_submit:", e)
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Internal Server Error: {str(e)}")
+
+
+def create_submission(user_id: int, question_id: int, code: str, language: str, test_id: int | None, status: str, execution_time: int, memory_used: int, db: Session):
+    submission = models.Submission(
+        user_id=user_id,
+        question_id=question_id,
+        test_id=test_id,
+        code=code,
+        language=language,
+        status=status,
+        execution_time=execution_time,
+        memory_used=memory_used
+    )
+    db.add(submission)
+    db.commit()
+    db.refresh(submission)
+    return submission
+
+
+
+

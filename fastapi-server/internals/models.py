@@ -76,7 +76,7 @@ class Submission(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    test_id = Column(Integer, ForeignKey("tests.id"), nullable=True)  # null → practice mode
+    test_id = Column(Integer, ForeignKey("tests.id"), nullable=True) 
     question_id = Column(Integer, ForeignKey("questions.id"), nullable=False)
     code = Column(Text, nullable=False)
     language = Column(String, nullable=False)

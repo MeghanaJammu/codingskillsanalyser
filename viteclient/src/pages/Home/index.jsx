@@ -275,7 +275,7 @@ const Home = () => {
               onClick={handleStartSolving}
               className="w-full bg-[#2d2d2d] cursor-pointer hover:bg-[#444] py-2 rounded-md text-lg font-semibold"
             >
-              Start Solving
+              Start Test
             </button>
           </div>
         </div>
