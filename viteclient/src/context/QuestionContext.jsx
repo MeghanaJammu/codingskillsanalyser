@@ -25,6 +25,8 @@ const getLSKeys = (username) => {
   return {
     questions: `${username}_questions`,
     currentIndex: `${username}_currentIndex`,
+    topics: `${username}_topics`,
+    difficultyCounts: `${username}_difficultyCounts`,
   };
 };
 
@@ -112,6 +114,8 @@ export const QuestionProvider = ({ id, children }) => {
   const clearSession = () => {
     localStorage.removeItem(LS_KEYS.questions);
     localStorage.removeItem(LS_KEYS.currentIndex);
+    localStorage.removeItem(LS_KEYS.topics);
+    localStorage.removeItem(LS_KEYS.difficultyCounts);
     setQuestions([]);
     setCurrentIndex(0);
     setQuestion(null);

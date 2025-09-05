@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { fetchFilteredQuestions } from "../../axios/selectedQuestions";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTimer } from "../../context/TimerContext";
 import { useQuestion } from "../../context/QuestionContext";
 import Cookies from "js-cookie";
 
 const Questions = () => {
-  const { startTimer } = useTimer();
-  const { questions, setQuestionList, setCurrentIndex } = useQuestion();
+  const { startTimer, resetTimer } = useTimer();
+
+  const { questions, setQuestionList, setCurrentIndex, clearSession } =
+    useQuestion();
 
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
-  const { topics: stateTopics = [], difficultyCounts: stateDiffs = {} } =
-    location.state || {};
 
   // fetch username from localStorage
   const username = localStorage.getItem("username");
@@ -27,46 +26,38 @@ const Questions = () => {
   }, [navigate]);
 
   useEffect(() => {
-    // Fallback: load from localStorage if location.state is missing
-    let storedTopics = stateTopics;
-    let storedDiffs = stateDiffs;
-
-    if (
-      (!storedTopics || storedTopics.length === 0) &&
-      username &&
-      localStorage.getItem(`${username}_topics`)
-    ) {
-      storedTopics = JSON.parse(localStorage.getItem(`${username}_topics`));
-    }
-
-    if (
-      Object.keys(storedDiffs).length === 0 &&
-      username &&
-      localStorage.getItem(`${username}_difficultyCounts`)
-    ) {
-      storedDiffs = JSON.parse(
-        localStorage.getItem(`${username}_difficultyCounts`)
-      );
-    }
-
-    // only fetch if context has no cached questions
+    // If questions are already in context, don't refetch
     if (questions.length > 0) {
       setLoading(false);
       return;
     }
 
     const loadQuestions = async () => {
+      if (!username) {
+        setLoading(false);
+        return; // Can't fetch without a user
+      }
+
+      // **Primary Source of Truth: localStorage**
+      // This is more reliable than location.state
+      const storedTopics = JSON.parse(
+        localStorage.getItem(`${username}_topics`) || "[]"
+      );
+      const storedDiffs = JSON.parse(
+        localStorage.getItem(`${username}_difficultyCounts`) || "{}"
+      );
+
+      // Only fetch if we have valid parameters
+      if (storedTopics.length === 0 || Object.keys(storedDiffs).length === 0) {
+        console.warn("No topics or difficulty counts found. Navigating home.");
+        navigate("/"); // Redirect if state is invalid
+        return;
+      }
+
       try {
+        setLoading(true);
         const data = await fetchFilteredQuestions(storedTopics, storedDiffs);
         setQuestionList(data);
-        console.log("here");
-        console.log(data);
-
-        // persist fetched questions (user-specific)
-        if (username) {
-          localStorage.setItem(`${username}_questions`, JSON.stringify(data));
-        }
-
         startTimer(storedDiffs);
       } catch (err) {
         console.error("Error fetching questions", err);
@@ -75,16 +66,8 @@ const Questions = () => {
       }
     };
 
-    // if already in localStorage (user-specific), use it
-    if (username && localStorage.getItem(`${username}_questions`)) {
-      setQuestionList(
-        JSON.parse(localStorage.getItem(`${username}_questions`))
-      );
-      setLoading(false);
-    } else {
-      loadQuestions();
-    }
-  }, [stateTopics, stateDiffs, username]);
+    loadQuestions();
+  }, [username, questions.length, setQuestionList, startTimer, navigate]); // Dependencies updated
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty.toLowerCase()) {
@@ -198,22 +181,20 @@ const Questions = () => {
                     </button>
                     <button
                       onClick={() => {
+                        // ✅ Centralized and reliable cleanup
+                        clearSession();
+                        resetTimer();
+
+                        // Remove any other user-specific data if needed
+                        const username = localStorage.getItem("username");
                         if (username) {
-                          localStorage.removeItem(`${username}_questions`);
-                          localStorage.removeItem(`${username}_topics`);
-                          localStorage.removeItem(
-                            `${username}_difficultyCounts`
-                          );
-                          // remove all saved user code (for all questions + langs)
                           Object.keys(localStorage).forEach((key) => {
                             if (key.startsWith(`${username}_userCode_`)) {
                               localStorage.removeItem(key);
                             }
                           });
                         }
-                        setQuestionList([]); // clear context
-                        setCurrentIndex(0); // reset index
-                        startTimer({}); // reset timer
+
                         navigate("/");
                       }}
                       className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white"

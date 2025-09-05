@@ -83,6 +83,13 @@ export const TimerProvider = ({ children }) => {
     }
   };
 
+  const resetTimer = () => {
+    setIsActive(false);
+    setSecondsLeft(0);
+    localStorage.removeItem(LS_KEYS.endTime);
+    localStorage.removeItem(LS_KEYS.active);
+  };
+
   const formatTime = (totalSeconds) => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -97,7 +104,7 @@ export const TimerProvider = ({ children }) => {
 
   return (
     <TimerContext.Provider
-      value={{ secondsLeft, isActive, startTimer, formatTime }}
+      value={{ secondsLeft, isActive, startTimer, formatTime, resetTimer }}
     >
       {children}
     </TimerContext.Provider>
