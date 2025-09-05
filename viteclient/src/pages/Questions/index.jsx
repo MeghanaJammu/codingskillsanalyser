@@ -58,6 +58,8 @@ const Questions = () => {
       try {
         const data = await fetchFilteredQuestions(storedTopics, storedDiffs);
         setQuestionList(data);
+        console.log("here");
+        console.log(data);
 
         // persist fetched questions (user-specific)
         if (username) {
@@ -81,14 +83,7 @@ const Questions = () => {
     } else {
       loadQuestions();
     }
-  }, [
-    stateTopics,
-    stateDiffs,
-    questions,
-    setQuestionList,
-    startTimer,
-    username,
-  ]);
+  }, [stateTopics, stateDiffs, username]);
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty.toLowerCase()) {
@@ -177,10 +172,20 @@ const Questions = () => {
 
             <div className="mt-6 w-full flex justify-center">
               <button
-                onClick={() => {}}
+                onClick={() => {
+                  if (username) {
+                    localStorage.removeItem(`${username}_questions`);
+                    localStorage.removeItem(`${username}_topics`);
+                    localStorage.removeItem(`${username}_difficultyCounts`);
+                  }
+                  setQuestionList([]); // clear context
+                  setCurrentIndex(0); // reset index
+                  startTimer({}); // reset timer
+                  navigate("/");
+                }}
                 className="bg-red-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md 
-                       hover:bg-red-700 active:bg-red-800 focus:outline-none focus:ring-2 
-                       focus:ring-red-400 focus:ring-opacity-50 transition-colors duration-200"
+               hover:bg-red-700 active:bg-red-800 focus:outline-none focus:ring-2 
+               focus:ring-red-400 focus:ring-opacity-50 transition-colors duration-200"
               >
                 End Test
               </button>

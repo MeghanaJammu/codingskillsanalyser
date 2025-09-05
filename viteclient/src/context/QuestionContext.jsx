@@ -1,7 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+} from "react";
 import PropTypes from "prop-types";
 import { fetchQuestionById } from "../axios/solvingQuestion";
-import Cookies from "js-cookie";
 
 const QuestionContext = createContext();
 export const useQuestion = () => useContext(QuestionContext);
@@ -16,17 +21,18 @@ const safeParse = (str, fallback) => {
 };
 
 // Build localStorage keys per user
-const getLSKeys = () => {
-  const username = Cookies.get("username") || "guest";
+const getLSKeys = (username) => {
   return {
-    questions: `questions_${username}`,
-    currentIndex: `currentIndex_${username}`,
+    questions: `${username}_questions`,
+    currentIndex: `${username}_currentIndex`,
   };
 };
 
 export const QuestionProvider = ({ id, children }) => {
-  const LS_KEYS = getLSKeys();
+  const username = localStorage.getItem("username") || "guest";
+  const LS_KEYS = useMemo(() => getLSKeys(username), [username]);
 
+  // Boot from localStorage
   const bootQuestions = (() => {
     const raw = localStorage.getItem(LS_KEYS.questions);
     return raw ? safeParse(raw, []) : [];
@@ -38,40 +44,46 @@ export const QuestionProvider = ({ id, children }) => {
     return Number.isInteger(n) && n >= 0 ? n : 0;
   })();
 
-  // global question list + position
+  // Global state
   const [questions, setQuestions] = useState(bootQuestions);
   const [currentIndex, setCurrentIndex] = useState(() =>
     bootQuestions.length ? Math.min(bootIndex, bootQuestions.length - 1) : 0
   );
-
-  // currently focused question (derived)
   const [question, setQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const setQuestionList = (qList) => setQuestions(qList);
 
-  // keep localStorage in sync (per-user)
+  // Persist changes
   useEffect(() => {
-    if (questions.length > 0) {
-      localStorage.setItem(LS_KEYS.questions, JSON.stringify(questions));
+    const savedIndex = localStorage.getItem(LS_KEYS.currentIndex);
+    if (String(currentIndex) !== savedIndex) {
+      localStorage.setItem(LS_KEYS.currentIndex, String(currentIndex));
     }
-    localStorage.setItem(LS_KEYS.currentIndex, String(currentIndex));
+    if (questions.length > 0) {
+      const savedQs = localStorage.getItem(LS_KEYS.questions);
+      const newQs = JSON.stringify(questions);
+      if (savedQs !== newQs) {
+        localStorage.setItem(LS_KEYS.questions, newQs);
+      }
+    }
   }, [questions, currentIndex, LS_KEYS]);
 
-  // derive current question from list + index
+  // Derive current question safely
   useEffect(() => {
     if (questions.length > 0) {
       const clamped = Math.min(Math.max(currentIndex, 0), questions.length - 1);
+
       if (clamped !== currentIndex) {
         setCurrentIndex(clamped);
-        return; // will re-run
+      } else {
+        setQuestion(questions[clamped]);
+        setLoading(false);
       }
-      setQuestion(questions[clamped]);
-      setLoading(false);
     }
   }, [currentIndex, questions]);
 
-  // fallback: fetch single question by id if no list is present
+  // Fallback: fetch single question if no list
   useEffect(() => {
     if (questions.length === 0 && id) {
       const load = async () => {
@@ -97,7 +109,6 @@ export const QuestionProvider = ({ id, children }) => {
     return null;
   };
 
-  // optional: call later when test finishes
   const clearSession = () => {
     localStorage.removeItem(LS_KEYS.questions);
     localStorage.removeItem(LS_KEYS.currentIndex);

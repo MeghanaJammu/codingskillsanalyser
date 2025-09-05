@@ -1,12 +1,17 @@
 /* eslint-disable react/prop-types */
-import React, { createContext, useState, useEffect, useContext } from "react";
-import Cookies from "js-cookie";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  useMemo,
+} from "react";
 
 const TimerContext = createContext();
 
 // Build per-user localStorage keys
 const getLSKeys = () => {
-  const username = Cookies.get("username") || "guest";
+  const username = localStorage.getItem("username") || "guest";
   return {
     endTime: `timer_endTime_${username}`,
     active: `timer_isActive_${username}`,
@@ -14,12 +19,13 @@ const getLSKeys = () => {
 };
 
 export const TimerProvider = ({ children }) => {
-  const LS_KEYS = getLSKeys();
+  // ✅ memoize LS_KEYS
+  const LS_KEYS = useMemo(() => getLSKeys(), []);
 
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [isActive, setIsActive] = useState(false);
 
-  // On mount, restore from localStorage
+  // Restore timer state from localStorage
   useEffect(() => {
     const storedEndTime = localStorage.getItem(LS_KEYS.endTime);
     const storedActive = localStorage.getItem(LS_KEYS.active) === "true";
