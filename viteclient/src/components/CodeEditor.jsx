@@ -26,11 +26,11 @@ const CodeEditor = () => {
   const [customOutput, setCustomOutput] = useState("");
   const [isError, setIsError] = useState(false);
 
-  // ✅ separate loading states
+  //separate loading states
   const [isRunLoading, setIsRunLoading] = useState(false);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
-  // ✅ separate results for run vs submit
+  //separate results for run vs submit
   const [runResults, setRunResults] = useState([]);
   const [submitResults, setSubmitResults] = useState([]);
   const [isSubmission, setIsSubmission] = useState(false);

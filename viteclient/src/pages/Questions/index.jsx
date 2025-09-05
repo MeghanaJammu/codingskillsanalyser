@@ -10,6 +10,7 @@ const Questions = () => {
   const { questions, setQuestionList, setCurrentIndex } = useQuestion();
 
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { topics: stateTopics = [], difficultyCounts: stateDiffs = {} } =
@@ -172,17 +173,7 @@ const Questions = () => {
 
             <div className="mt-6 w-full flex justify-center">
               <button
-                onClick={() => {
-                  if (username) {
-                    localStorage.removeItem(`${username}_questions`);
-                    localStorage.removeItem(`${username}_topics`);
-                    localStorage.removeItem(`${username}_difficultyCounts`);
-                  }
-                  setQuestionList([]); // clear context
-                  setCurrentIndex(0); // reset index
-                  startTimer({}); // reset timer
-                  navigate("/");
-                }}
+                onClick={() => setShowModal(true)}
                 className="bg-red-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md 
                hover:bg-red-700 active:bg-red-800 focus:outline-none focus:ring-2 
                focus:ring-red-400 focus:ring-opacity-50 transition-colors duration-200"
@@ -190,6 +181,49 @@ const Questions = () => {
                 End Test
               </button>
             </div>
+
+            {/* Confirmation Modal */}
+            {showModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-[#1e293b] p-6 rounded-2xl shadow-lg w-[90%] max-w-md">
+                  <h2 className="text-xl font-semibold text-white mb-4">
+                    Are you sure you want to end the test?
+                  </h2>
+                  <div className="flex justify-end gap-4">
+                    <button
+                      onClick={() => setShowModal(false)}
+                      className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-700 text-white"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (username) {
+                          localStorage.removeItem(`${username}_questions`);
+                          localStorage.removeItem(`${username}_topics`);
+                          localStorage.removeItem(
+                            `${username}_difficultyCounts`
+                          );
+                          // remove all saved user code (for all questions + langs)
+                          Object.keys(localStorage).forEach((key) => {
+                            if (key.startsWith(`${username}_userCode_`)) {
+                              localStorage.removeItem(key);
+                            }
+                          });
+                        }
+                        setQuestionList([]); // clear context
+                        setCurrentIndex(0); // reset index
+                        startTimer({}); // reset timer
+                        navigate("/");
+                      }}
+                      className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      Yes, End Test
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>
