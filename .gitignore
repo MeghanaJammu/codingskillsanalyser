@@ -20,6 +20,7 @@ env/
 
 *.env
 *.env.*
+saved_model_codeT5_loaded/
 
 
 .vscode/

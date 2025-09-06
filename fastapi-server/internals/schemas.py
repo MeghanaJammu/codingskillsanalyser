@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
+from typing import List, Dict, Any
 
 class User(BaseModel):
     username: str
@@ -56,3 +57,24 @@ class SubmitRequest(BaseModel):
     sourceCode: str
     version: str
     qid: int
+
+
+
+class CodeForQuestion(BaseModel):
+    question_id: int
+    title: str
+    code: str
+
+class CodeSubmissionRequest(BaseModel):
+    submissions: List[CodeForQuestion]
+
+class AnalysisResult(BaseModel):
+    title: str
+    code: str
+    tc_final: Any
+    sc_gemini: Any
+    suggestion: str
+
+
+class AnalysisResponse(BaseModel):
+    results: Dict[int, AnalysisResult]

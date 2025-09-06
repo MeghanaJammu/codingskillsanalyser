@@ -9,3 +9,10 @@ python-multipart
 pandas
 openpyxl
 httpx
+transformers
+datasets
+torch
+google-generativeai
+huggingface_hub
+python-dotenv
+hf-xet
