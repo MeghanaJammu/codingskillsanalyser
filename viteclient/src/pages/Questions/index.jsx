@@ -1,32 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { fetchFilteredQuestions } from "../../axios/selectedQuestions";
+import { analyzeUserCodes } from "../../axios/analyzeCodes";
 import { useNavigate } from "react-router-dom";
 import { useTimer } from "../../context/TimerContext";
 import { useQuestion } from "../../context/QuestionContext";
 import Cookies from "js-cookie";
 
 const Questions = () => {
-  const { startTimer, resetTimer } = useTimer();
-
-  const { questions, setQuestionList, setCurrentIndex, clearSession } =
-    useQuestion();
+  const { startTimer } = useTimer();
+  const { questions, setQuestionList, setCurrentIndex } = useQuestion();
 
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
   const navigate = useNavigate();
 
-  // fetch username from localStorage
   const username = localStorage.getItem("username");
 
   useEffect(() => {
     const token = Cookies.get("token");
-    if (!token) {
-      navigate("/login");
-    }
+    if (!token) navigate("/login");
   }, [navigate]);
 
   useEffect(() => {
-    // If questions are already in context, don't refetch
     if (questions.length > 0) {
       setLoading(false);
       return;
@@ -35,11 +31,9 @@ const Questions = () => {
     const loadQuestions = async () => {
       if (!username) {
         setLoading(false);
-        return; // Can't fetch without a user
+        return;
       }
 
-      // **Primary Source of Truth: localStorage**
-      // This is more reliable than location.state
       const storedTopics = JSON.parse(
         localStorage.getItem(`${username}_topics`) || "[]"
       );
@@ -47,10 +41,9 @@ const Questions = () => {
         localStorage.getItem(`${username}_difficultyCounts`) || "{}"
       );
 
-      // Only fetch if we have valid parameters
       if (storedTopics.length === 0 || Object.keys(storedDiffs).length === 0) {
         console.warn("No topics or difficulty counts found. Navigating home.");
-        navigate("/"); // Redirect if state is invalid
+        navigate("/");
         return;
       }
 
@@ -67,7 +60,7 @@ const Questions = () => {
     };
 
     loadQuestions();
-  }, [username, questions.length, setQuestionList, startTimer, navigate]); // Dependencies updated
+  }, [username, questions.length, setQuestionList, startTimer, navigate]);
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty.toLowerCase()) {
@@ -140,16 +133,6 @@ const Questions = () => {
                       </td>
                     </tr>
                   ))}
-                  {questions.length === 0 && !loading && (
-                    <tr>
-                      <td
-                        colSpan="3"
-                        className="py-5 text-center text-gray-500"
-                      >
-                        No questions found
-                      </td>
-                    </tr>
-                  )}
                 </tbody>
               </table>
             </div>
@@ -180,26 +163,24 @@ const Questions = () => {
                       Cancel
                     </button>
                     <button
-                      onClick={() => {
-                        // ✅ Centralized and reliable cleanup
-                        clearSession();
-                        resetTimer();
+                      onClick={async () => {
+                        if (!questions || questions.length === 0) return;
 
-                        // Remove any other user-specific data if needed
-                        const username = localStorage.getItem("username");
-                        if (username) {
-                          Object.keys(localStorage).forEach((key) => {
-                            if (key.startsWith(`${username}_userCode_`)) {
-                              localStorage.removeItem(key);
-                            }
-                          });
+                        setAnalyzing(true);
+                        try {
+                          const results = await analyzeUserCodes(questions);
+
+                          // Navigate with results
+                          navigate("/analysis-results", { state: { results } });
+                        } catch (err) {
+                          console.error("Failed to analyze codes", err);
+                        } finally {
+                          setAnalyzing(false);
                         }
-
-                        navigate("/");
                       }}
                       className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white"
                     >
-                      Yes, End Test
+                      {analyzing ? "Analyzing..." : "Yes, End Test"}
                     </button>
                   </div>
                 </div>

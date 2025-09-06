@@ -1,6 +1,7 @@
 import google.generativeai as genai
 import re
 
+
 api_key = "AIzaSyCcpz9BkXxSSPImU69VSpkjspaWY4eCKWM"
 
 genai.configure(api_key=api_key)
@@ -11,11 +12,11 @@ gemini_model = genai.GenerativeModel("gemini-2.5-pro")
 
 def analyze_with_gemini(code_snippet):
     prompt = f"""
-Analyze this Python code and return three things:
+Analyze this code and return three things:
 
 1. Time Complexity (TC) in Big-O notation.
 2. Space Complexity (SC) in Big-O notation.
-3. One short suggestion to improve the code (if any).
+3. A suggestion to improve the code and include the language used by user and also explain the method used by user as the solution (if any).
 
 Format EXACTLY like this:
 TC: <time complexity>
