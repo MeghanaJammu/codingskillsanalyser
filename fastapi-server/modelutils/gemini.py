@@ -16,7 +16,7 @@ Analyze this code and return three things:
 
 1. Time Complexity (TC) in Big-O notation.
 2. Space Complexity (SC) in Big-O notation.
-3. A suggestion to improve the code and include the language used by user and also explain the method used by user as the solution (if any).
+3. A suggestion to improve the code and include the language used by user and also explain the method used by user as the solution (if any).Also if the code is wrong fro that task as you expect, then tell the user why is it wrong and what to be done to make it correct and explain well but dont explain time and space complexities.
 
 Format EXACTLY like this:
 TC: <time complexity>

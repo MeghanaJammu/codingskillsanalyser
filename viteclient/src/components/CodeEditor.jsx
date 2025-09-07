@@ -2,8 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import LanguageSelector from "./LanguageSelector";
 import { CODE_SNIPPETS } from "../constants";
 import { executeCode } from "../axios/editorrun";
-import { evaluateRunCode } from "../axios/evaluateRun";
-import { submitCode } from "../axios/evaluateRun";
+import { evaluateRunCode, submitCode } from "../axios/evaluateRun";
 import { ClipLoader } from "react-spinners";
 import Editor from "@monaco-editor/react";
 import Examples from "./Examples";
@@ -15,7 +14,7 @@ const CodeEditor = () => {
   const qid = question?.id;
 
   const examples = question?.examples || [];
-  const username = localStorage.getItem("username"); // get active user
+  const username = localStorage.getItem("username"); // active user
 
   const editorRef = useRef();
   const [userCode, setUserCode] = useState("");
@@ -26,19 +25,18 @@ const CodeEditor = () => {
   const [customOutput, setCustomOutput] = useState("");
   const [isError, setIsError] = useState(false);
 
-  //separate loading states
+  // Loading states
   const [isRunLoading, setIsRunLoading] = useState(false);
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
 
-  //separate results for run vs submit
+  // Results
   const [runResults, setRunResults] = useState([]);
   const [submitResults, setSubmitResults] = useState([]);
   const [isSubmission, setIsSubmission] = useState(false);
 
-  // storage key includes username, qid, and language
+  // storage key
   const STORAGE_KEY = (qid, lang) => `${username}_userCode_${qid}_${lang}`;
 
-  // restore saved code when question/language changes
   useEffect(() => {
     if (!qid || !username) return;
     const savedCode = localStorage.getItem(STORAGE_KEY(qid, language));
@@ -46,7 +44,6 @@ const CodeEditor = () => {
     setIsEditorReady(true);
   }, [qid, language, username]);
 
-  // reset results when moving to new question
   useEffect(() => {
     if (!qid) return;
     setRunResults([]);
@@ -56,16 +53,13 @@ const CodeEditor = () => {
     setIsError(false);
   }, [qid]);
 
-  // save whenever code changes
   useEffect(() => {
     if (isEditorReady && qid && username) {
       localStorage.setItem(STORAGE_KEY(qid, language), userCode);
     }
   }, [userCode, qid, language, isEditorReady, username]);
 
-  const handleToggle = () => {
-    setIsChecked((prev) => !prev);
-  };
+  const handleToggle = () => setIsChecked((prev) => !prev);
 
   const onSelect = (lang) => {
     setIsEditorReady(false);
@@ -82,7 +76,6 @@ const CodeEditor = () => {
     const sourceCode = editorRef.current.getValue();
     if (!sourceCode) return;
 
-    // persist immediately when user runs code
     if (qid && username) {
       localStorage.setItem(STORAGE_KEY(qid, language), sourceCode);
     }
@@ -91,7 +84,6 @@ const CodeEditor = () => {
       setIsRunLoading(true);
 
       if (isChecked) {
-        // Run with custom input
         const { run } = await executeCode(language, sourceCode, customInput);
         setCustomOutput(run.output);
         setIsError(!!run.stderr);
@@ -133,7 +125,6 @@ const CodeEditor = () => {
     const sourceCode = editorRef.current.getValue();
     if (!sourceCode) return;
 
-    // persist when user submits too
     if (qid && username) {
       localStorage.setItem(STORAGE_KEY(qid, language), sourceCode);
     }
@@ -143,7 +134,7 @@ const CodeEditor = () => {
       const { results } = await submitCode(sourceCode, language, qid);
       setSubmitResults(results);
       setCustomOutput("");
-      setIsError(results.some((r) => !r.passed)); // if any testcase failed
+      setIsError(results.some((r) => !r.passed));
     } catch (error) {
       setSubmitResults([{ output: error.message || "Submission Error" }]);
       setIsError(true);
@@ -153,46 +144,36 @@ const CodeEditor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#171628] p-4 sm:p-6 flex flex-col gap-6">
-      {/* Top controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 flex-wrap">
-        <div className="w-full sm:w-auto">
-          <LanguageSelector language={language} onSelect={onSelect} />
-        </div>
-        <div className="flex flex-wrap gap-2">
+    <div className="min-h-screen bg-[#0F111A] p-6 flex flex-col gap-6 text-gray-200">
+      {/* Top Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <LanguageSelector language={language} onSelect={onSelect} />
+        <div className="flex flex-wrap gap-3">
           <button
             onClick={handleResetCode}
-            className="bg-[#2b2b2f] cursor-pointer border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]"
+            className="px-4 py-2 text-sm cursor-pointer font-medium border border-gray-600 rounded-lg bg-[#1C1F2E] hover:bg-[#262B3F] transition"
           >
             Reset
           </button>
           <button
             onClick={handleRunCode}
             disabled={isRunLoading}
-            className="bg-[#2b2b2f] cursor-pointer border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f] flex items-center justify-center min-w-[60px]"
+            className="px-5 py-2 text-sm cursor-pointer font-medium rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 hover:opacity-90 transition flex items-center justify-center"
           >
-            {isRunLoading ? (
-              <ClipLoader color="#36d7b7" loading={isRunLoading} size={20} />
-            ) : (
-              "RUN"
-            )}
+            {isRunLoading ? <ClipLoader color="#fff" size={18} /> : "Run"}
           </button>
           <button
             onClick={handleSubmitCode}
             disabled={isSubmitLoading}
-            className="bg-[#2b2b2f] cursor-pointer border border-[#7976A2] text-gray-400 text-sm px-4 py-1 rounded-md hover:bg-[#3a3a3f]"
+            className="px-5 py-2 text-sm cursor-pointer font-medium rounded-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:opacity-90 transition flex items-center justify-center"
           >
-            {isSubmitLoading ? (
-              <ClipLoader color="#36d7b7" loading={isSubmitLoading} size={20} />
-            ) : (
-              "Submit"
-            )}
+            {isSubmitLoading ? <ClipLoader color="#fff" size={18} /> : "Submit"}
           </button>
         </div>
       </div>
 
-      {/* Editor section */}
-      <div className="w-full h-[50vh] border border-[#42375B] rounded-md bg-[#1e1e2e] overflow-hidden">
+      {/* Code Editor */}
+      <div className="w-full h-[55vh] border border-gray-700 rounded-xl shadow-md bg-[#1C1F2E] overflow-hidden">
         {isEditorReady && (
           <Editor
             height="100%"
@@ -206,50 +187,55 @@ const CodeEditor = () => {
         )}
       </div>
 
-      {/* Output/Input / Examples section */}
-      <div className="w-full border border-[#42375B] rounded-lg p-4 bg-[#333240]">
-        <div className="flex justify-end items-center mb-4">
+      {/* I/O and Results */}
+      <div className="w-full border border-gray-700 rounded-xl bg-[#1A1D2B] shadow-md p-5">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-semibold text-lg tracking-wide">
+            Execution Panel
+          </h3>
           <div className="flex items-center gap-2">
             <input
               type="checkbox"
               id="custom"
               checked={isChecked}
               onChange={handleToggle}
-              className="accent-gray-500 cursor-pointer w-4 h-4"
+              className="w-4 h-4 accent-indigo-500 cursor-pointer"
             />
             <label
               htmlFor="custom"
-              className="text-white font-semibold text-sm"
+              className="text-sm font-medium cursor-pointer"
             >
-              Custom input
+              Custom Input
             </label>
           </div>
         </div>
 
         {isChecked ? (
           <div className="flex flex-col gap-4">
-            {/* Custom input/output */}
             <div>
-              <label className="text-white" htmlFor="userInput">
+              <label
+                className="text-sm cursor-pointer font-medium"
+                htmlFor="userInput"
+              >
                 Input
               </label>
               <textarea
                 id="userInput"
                 rows="4"
-                className="w-full mt-2 p-2 rounded-md bg-[#1e1e2e] text-[#878791] border border-[#42375B]"
+                className="w-full mt-2 p-3 rounded-lg bg-[#0F111A] border border-gray-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none transition"
                 value={customInput}
                 onChange={(e) => setCustomInput(e.target.value)}
               ></textarea>
             </div>
             <div>
-              <p className="text-gray-300 font-medium">Output</p>
+              <p className="text-sm font-medium">Output</p>
               <div
                 id="userOutput"
-                className="w-full min-h-[100px] mt-2 p-2 rounded-md bg-[#1e1e2e] border"
-                style={{
-                  color: isError ? "#dc2626" : "#878791",
-                  borderColor: isError ? "#dc2626" : "#42375B",
-                }}
+                className={`w-full min-h-[120px] mt-2 p-3 rounded-lg bg-[#0F111A] border transition ${
+                  isError
+                    ? "border-red-500 text-red-400"
+                    : "border-gray-600 text-gray-300"
+                }`}
               >
                 {customOutput ? (
                   <pre className="whitespace-pre-wrap break-words">
@@ -263,8 +249,8 @@ const CodeEditor = () => {
           </div>
         ) : isSubmission ? (
           isSubmitLoading ? (
-            <div className="flex justify-center items-center py-8">
-              <ClipLoader color="#36d7b7" loading={true} size={40} />
+            <div className="flex justify-center items-center py-10">
+              <ClipLoader color="#36d7b7" size={40} />
             </div>
           ) : (
             <SubmissionResults results={submitResults} />

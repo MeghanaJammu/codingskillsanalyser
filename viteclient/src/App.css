@@ -24,3 +24,19 @@
 .scrollable-container:hover::-webkit-scrollbar-thumb {
   background-color: #4b5563;
 }
+
+/* Custom scrollbar for code blocks */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3d5058; /* cyan */
+  border-radius: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #3e4b51;
+}

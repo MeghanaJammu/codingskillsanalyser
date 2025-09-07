@@ -9,7 +9,6 @@ import React, {
 
 const TimerContext = createContext();
 
-// Build per-user localStorage keys
 const getLSKeys = () => {
   const username = localStorage.getItem("username") || "guest";
   return {
@@ -19,13 +18,11 @@ const getLSKeys = () => {
 };
 
 export const TimerProvider = ({ children }) => {
-  // ✅ memoize LS_KEYS
   const LS_KEYS = useMemo(() => getLSKeys(), []);
 
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [isActive, setIsActive] = useState(false);
 
-  // Restore timer state from localStorage
   useEffect(() => {
     const storedEndTime = localStorage.getItem(LS_KEYS.endTime);
     const storedActive = localStorage.getItem(LS_KEYS.active) === "true";
