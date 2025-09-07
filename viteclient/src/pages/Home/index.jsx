@@ -81,13 +81,7 @@ const Navbar = ({ onLogout }) => (
 );
 
 const Hero = ({ onCTAClick }) => (
-  <div
-    className="min-h-[93vh] relative flex items-center justify-center text-center px-6 py-16 bg-cover bg-center"
-    style={{
-      backgroundImage:
-        "url('https://images.pexels.com/photos/1089438/pexels-photo-1089438.jpeg?_gl=1*1o7kyj7*_ga*MTY0ODY5MjU4Ni4xNzU3MjMzNzI1*_ga_8JE65Q40S6*czE3NTcyMzM3MjQkbzEkZzEkdDE3NTcyMzM3MzEkajUzJGwwJGgw')",
-    }}
-  >
+  <div className="min-h-[93vh] relative flex items-center justify-center text-center px-6 py-16 bg-cover bg-center">
     <div className="absolute inset-0 bg-black opacity-60"></div>
     <div className="relative z-10 max-w-3xl">
       <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">
