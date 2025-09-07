@@ -69,11 +69,22 @@ const selectCustomStyles = {
 };
 
 const Navbar = ({ onLogout }) => (
-  <header className="sticky top-0 z-50 h-[7vh] flex justify-between items-center px-6 md:px-10 bg-slate-900/80 backdrop-blur-sm border-b border-slate-800">
-    <div className="font-bold text-xl text-white">SmartCoder</div>
+  <header className="sticky top-0 z-50 flex justify-between items-center px-6 md:px-12 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 py-4 shadow-lg">
+    <div className="flex items-center space-x-4">
+      <img
+        src="/codeSmartLogo.jpg"
+        alt="CodeSmart Logo"
+        className="w-12 h-12 object-contain rounded-full shadow-md border border-slate-700"
+      />
+      <h2 className="text-white font-extrabold text-2xl tracking-wide">
+        <span>Code</span>
+        <span className="text-blue-400">Smart</span>
+      </h2>
+    </div>
+
     <button
       onClick={onLogout}
-      className="bg-slate-700 px-4 py-1.5 rounded-md text-sm font-medium text-slate-200 hover:bg-slate-600 transition-colors"
+      className="bg-red-600 px-5 py-2 rounded-xl text-sm font-semibold text-white shadow-md hover:bg-red-700 hover:shadow-lg active:scale-95 transition-all duration-200"
     >
       Logout
     </button>

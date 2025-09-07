@@ -47,9 +47,17 @@ const Register = () => {
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-[#0f0f15]">
       <div className="bg-[#1d1d24] rounded-md shadow-lg p-8 w-full max-w-md">
-        <h2 className="text-xl text-[#AAAAB0] font-semibold text-center mb-6">
-          TITLE+LOGO
-        </h2>
+        <div className="flex items-center justify-center space-x-3 cursor-pointer mb-6">
+          <img
+            src="/codeSmartLogo.jpg"
+            alt="CodeSmart Logo"
+            className="w-12 h-12 object-contain rounded-full shadow-lg"
+          />
+          <h2 className="text-white font-extrabold text-2xl tracking-wide hover:text-blue-400 transition-colors">
+            Code<span className="text-blue-500">Smart</span>
+          </h2>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-[#8F8F90] text-xs mb-1 text-left">

@@ -77,6 +77,18 @@ const Questions = () => {
   return (
     <div className="min-h-screen bg-[#0e1726] text-white py-10 px-4">
       <div className="max-w-5xl mx-auto">
+        <div className="flex items-center space-x-3 mb-6">
+          <img
+            src="/codeSmartLogo.jpg"
+            alt="CodeSmart Logo"
+            className="w-12 h-12 object-contain rounded-full shadow-md border border-slate-700"
+          />
+          <h2 className="text-white font-extrabold text-2xl tracking-wide">
+            <span className="hover:text-blue-400 transition-colors">Code</span>
+            <span className="text-blue-400">Smart</span>
+          </h2>
+        </div>
+
         <h1 className="text-3xl font-semibold mb-8 text-center">Questions</h1>
 
         {loading ? (

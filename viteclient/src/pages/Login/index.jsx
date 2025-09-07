@@ -53,9 +53,17 @@ const Login = () => {
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-[#0d0c13]">
       <div className="bg-[#1c1b23] p-8 rounded-md shadow-lg w-full max-w-md">
-        <h2 className="text-center text-[#AAAAB0] text-xl font-semibold mb-6">
-          TITLE + LOGO
-        </h2>
+        <div className="flex items-center justify-center space-x-3 cursor-pointer mb-6">
+          <img
+            src="/codeSmartLogo.jpg"
+            alt="CodeSmart Logo"
+            className="w-12 h-12 object-contain rounded-full shadow-lg"
+          />
+          <h2 className="text-white font-extrabold text-2xl tracking-wide hover:text-blue-400 transition-colors">
+            Code<span className="text-blue-500">Smart</span>
+          </h2>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm text-gray-400 text-left">
