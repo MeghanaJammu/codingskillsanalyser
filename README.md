@@ -6,8 +6,8 @@ Built for **students, competitive programmers, and developers** who want instant
 
 
 ## Demo  
-- [demoLink1]()  
-- [demoLink2]()  
+- [demoLink1](https://drive.google.com/file/d/1z7mwvxttnTc4xkawK1POqBeBmuPhct9T/view?usp=sharing)  
+- [demoLink2](https://drive.google.com/file/d/1zhXC3JljWWTkZ_oW4Sas3wwWWfN8pTe6/view?usp=sharing)  
 
 
 
@@ -27,12 +27,12 @@ Built for **students, competitive programmers, and developers** who want instant
 - **Backend:** FastAPI, SQLAlchemy  
 - **AI Models:** Fine-tuned CodeT5 (Hugging Face), Google Gemini GenAI  
 - **Execution Engine:** Piston API  
-- **Database:** PostgreSQL / SQLite  
+- **Database:** PostgreSQL / SQLite
 
----
+
 
 ## ML & AI Contributions
----
+
 
 - Processed and cleaned dataset of **~5000 coding questions**  
 - Built and evaluated baseline models (**Logistic Regression, MLP**) achieving **63% accuracy**  
