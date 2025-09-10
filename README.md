@@ -27,7 +27,7 @@ Built for **students, competitive programmers, and developers** who want instant
 - **Backend:** FastAPI, SQLAlchemy  
 - **AI Models:** Fine-tuned CodeT5 (Hugging Face), Google Gemini GenAI  
 - **Execution Engine:** Piston API  
-- **Database:** PostgreSQL / SQLite
+- **Database:** Local DB initially
 
 
 
@@ -65,4 +65,5 @@ A: All languages supported by **Piston API** (C++, Python, Java, JavaScript, etc
 
 
 - [@SomrimaSaha](https://github.com/somrima-09)  
-- [@MeghanaJammu](https://github.com/MeghanaJammu)  
+- [@MeghanaJammu](https://github.com/MeghanaJammu)
+- [@ShikharMishra1](https://github.com/ShikharMishra16)
