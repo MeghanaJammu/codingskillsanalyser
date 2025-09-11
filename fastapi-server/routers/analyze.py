@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from ..apirepository import analyze
-from ..internals import schemas
+from apirepository import analyze
+from internals import schemas
 
 
 router = APIRouter()

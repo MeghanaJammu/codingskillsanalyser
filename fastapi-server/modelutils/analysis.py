@@ -1,4 +1,4 @@
-from . import predict, gemini
+from modelutils import predict, gemini
 
 def hybrid_analysis(code_snippet):
     # Step 1: T5 predicts TC

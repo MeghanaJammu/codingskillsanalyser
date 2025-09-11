@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from ..internals import models
+from internals import models
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, cast
 from sqlalchemy.dialects.postgresql import JSONB
