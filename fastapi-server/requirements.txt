@@ -16,3 +16,5 @@ google-generativeai
 huggingface_hub
 python-dotenv
 hf-xet
+psycopg2-binary
+asyncpg
