@@ -42,3 +42,7 @@ async def get_question(id: int, db: Session = Depends(get_db)):
 @router.put("/question/{id}")
 async def update_question(id: int, updated_data: dict = Body(...),  db: Session = Depends(get_db)):
     return questions.update_question(id, updated_data, db)
+
+@router.delete("/question/{id}")
+async def delete_question_endpoint(id: int, db: Session = Depends(get_db)):
+    return questions.delete_question(id, db)

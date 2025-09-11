@@ -1,5 +1,6 @@
 from .database import Base
 from sqlalchemy import Column, Integer, String, Text, JSON
+from sqlalchemy.dialects.postgresql import JSONB
 
 
 class User(Base):
@@ -18,11 +19,11 @@ class Question(Base):
     title = Column(String, nullable=False)
     description = Column(Text, nullable=False)
     difficulty = Column(String, nullable=False)
-    topics = Column(JSON)
+    topics = Column(JSONB)
     input_format = Column(Text)
     output_format = Column(Text)
-    examples = Column(JSON)
-    hidden_cases = Column(JSON)
+    examples = Column(JSONB)
+    hidden_cases = Column(JSONB)
     constraints = Column(Text)
 
 

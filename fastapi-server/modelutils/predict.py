@@ -7,7 +7,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 load_dotenv()
 
 # Paths
-save_folder = "./saved_model_codeT5_loaded"
+save_folder = "./fastapi-server/saved_model_codeT5_loaded"
 model_name = "somrima0907/model_codeT5"
 access_token = os.getenv("HF_TOKEN")
 

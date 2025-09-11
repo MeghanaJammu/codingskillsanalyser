@@ -1,7 +1,8 @@
 from fastapi import HTTPException
 from ..internals import models
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
+from sqlalchemy import or_, cast
+from sqlalchemy.dialects.postgresql import JSONB
 import pandas as pd
 import json
 import ast
@@ -23,8 +24,7 @@ def parse_column(value, field_name, row_id):
             )
 
 
-
-def upload(file, db:Session):
+def upload(file, db: Session):
     if not file.filename.endswith((".xlsx", ".xls")):
         raise HTTPException(status_code=400, detail="Only Excel files are supported")
 
@@ -37,18 +37,19 @@ def upload(file, db:Session):
         try:
             question = models.Question(
                 id=row["id"],
-                title=row["title"],
-                description=str(row["description"]).replace("_x000D_", "").strip(),  
-                difficulty=row["difficulty"],
-                topics=parse_column(row["topics"], "topics", row["id"]),
-                input_format=str(row["input_format"]).replace("_x000D_", "").strip(),  
-                output_format=str(row["output_format"]).replace("_x000D_", "").strip(), 
-                examples=parse_column(row["examples"], "examples", row["id"]),
-                hidden_cases=parse_column(row["hidden_cases"], "hidden_cases", row["id"]),
-                constraints=str(row["constraints"]).replace("_x000D_", "").strip() 
+                title=str(row["title"]).strip(),
+                description=str(row["description"]).replace("_x000D_", "").strip(),
+                difficulty=str(row["difficulty"]).strip(),
+                topics=parse_column(row["topics"], "topics", row["id"]),  # JSON stored as list
+                input_format=str(row["input_format"]).replace("_x000D_", "").strip(),
+                output_format=str(row["output_format"]).replace("_x000D_", "").strip(),
+                examples=parse_column(row["examples"], "examples", row["id"]),  # JSON
+                hidden_cases=parse_column(row["hidden_cases"], "hidden_cases", row["id"]),  # JSON
+                constraints=str(row["constraints"]).replace("_x000D_", "").strip()
             )
             db.add(question)
 
+            print("Examples parsed:", parse_column(row["examples"], "examples", row["id"]))
 
         except HTTPException as http_ex:
             raise http_ex
@@ -72,7 +73,8 @@ def get(topics, easy_count, medium_count, hard_count, db: Session):
         query = db.query(models.Question).filter(models.Question.difficulty == diff)
 
         if topics:
-            topic_filters = [models.Question.topics.like(f'%"{t}"%') for t in topics]
+            # FIX: wrap each string inside a list so Postgres sees ["topic"]
+            topic_filters = [cast(models.Question.topics, JSONB).contains([t]) for t in topics]
             query = query.filter(or_(*topic_filters))
 
         return query.limit(count).all()
@@ -82,7 +84,6 @@ def get(topics, easy_count, medium_count, hard_count, db: Session):
     result += get_questions_for_difficulty("Hard", hard_count)
 
     return result
-
 
 
 def get_one(id: int, db: Session):
@@ -97,7 +98,6 @@ def update_question(id: int, updated_data: dict, db: Session):
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
 
-    # Update only provided fields
     for key, value in updated_data.items():
         if hasattr(question, key):
             if isinstance(value, str):
@@ -110,3 +110,12 @@ def update_question(id: int, updated_data: dict, db: Session):
     db.refresh(question)
     return question
 
+
+def delete_question(id: int, db: Session):
+    question = db.query(models.Question).filter(models.Question.id == id).first()
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+
+    db.delete(question)
+    db.commit()
+    return {"status": f"Question with ID {id} deleted successfully"}
