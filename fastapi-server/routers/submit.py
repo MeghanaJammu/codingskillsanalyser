@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from internals import database, schemas, models
-from apirepository import questions, submit
+from ..internals import database, schemas, models
+from ..apirepository import questions, submit
 
 
 router = APIRouter()

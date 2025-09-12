@@ -1,5 +1,5 @@
 from fastapi import status, HTTPException
-from internals import schemas, models, hashing
+from ..internals import schemas, models, hashing
 from sqlalchemy.orm import Session
 
 

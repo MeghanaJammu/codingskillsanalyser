@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from internals import schemas
-from apirepository import run
+from ..internals import schemas
+from ..apirepository import run
 
 
 

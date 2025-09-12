@@ -1,5 +1,5 @@
-from modelutils import analysis
-from internals import schemas
+from ..modelutils import analysis
+from ..internals import schemas
 
 
 

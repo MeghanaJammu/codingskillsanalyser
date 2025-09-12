@@ -1,5 +1,5 @@
 from fastapi import status, HTTPException
-from internals import jwtToken, schemas, models, hashing
+from ..internals import jwtToken, schemas, models, hashing
 from sqlalchemy.orm import Session
 from datetime import timedelta
 

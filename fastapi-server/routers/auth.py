@@ -2,9 +2,9 @@
 
 from fastapi import APIRouter,Depends
 from typing import Annotated
-from internals import database
+from ..internals import database
 from sqlalchemy.orm import Session
-from apirepository import auth
+from ..apirepository import auth
 from fastapi.security import OAuth2PasswordRequestForm
 
 

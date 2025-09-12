@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from internals import models, database
-from routers import user, auth, questions, run, submit, analyze
+from .internals import models, database
+from .routers import user, auth, questions, run, submit, analyze
 from fastapi.middleware.cors import CORSMiddleware
 
 
