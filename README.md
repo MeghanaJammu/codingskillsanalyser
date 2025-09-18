@@ -27,7 +27,7 @@ Built for **students, competitive programmers, and developers** who want instant
 - **Backend:** FastAPI, SQLAlchemy  
 - **AI Models:** Fine-tuned CodeT5 (Hugging Face), Google Gemini GenAI  
 - **Execution Engine:** Piston API  
-- **Database:** Local DB initially
+- **Database:** Local DB initially SQLite, Later Migrated to Postgres (Render-free tier)
 
 
 
@@ -57,12 +57,11 @@ Built for **students, competitive programmers, and developers** who want instant
 A: Code is passed to a fine-tuned CodeT5 model on Hugging Face, enhanced with Gemini GenAI for detailed feedback.  
 
 **Q: What languages are supported?**  
-A: All languages supported by **Piston API** (C++, Python, Java, JavaScript, etc.).  
+A: All languages supported by **Piston API**, but for simplcity the code editor allows only python, C++, java.  
 
 
 
 ## Authors
-
 
 - [@SomrimaSaha](https://github.com/somrima-09)  
 - [@MeghanaJammu](https://github.com/MeghanaJammu)
