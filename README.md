@@ -27,7 +27,7 @@ Built for **students, competitive programmers, and developers** who want instant
 - **Backend:** FastAPI, SQLAlchemy  
 - **AI Models:** Fine-tuned CodeT5 (Hugging Face), Google Gemini GenAI  
 - **Execution Engine:** Piston API  
-- **Database:** Local DB initially SQLite, Later Migrated to Postgres (Render-free tier)
+- **Database:** Initially used a local SQLite database, later migrated to PostgreSQL hosted on Render (free tier)
 
 
 
