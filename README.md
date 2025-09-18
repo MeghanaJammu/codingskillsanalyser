@@ -1,6 +1,6 @@
 # CodeSmart
 
-A full-stack web application that enables **real-time code execution** and provides **AI-driven feedback** on time and space complexity and code improvement suggestions.  
+A full-stack web application in which users can **practice coding questions** under contest style constraints that enables **real-time code execution** and provides **AI-driven feedback** on time and space complexity and code improvement suggestions at the end of test.  
 Built for **students, competitive programmers, and developers** who want instant execution, contest-style practice, and intelligent code analysis.  
 
 
