@@ -4,12 +4,14 @@ A full-stack web application in which users can **practice coding questions** un
 Built for **students, competitive programmers, and developers** who want instant execution, contest-style practice, and intelligent code analysis.  
 
 
-
 ## Demo  
 - [demoLink1](https://drive.google.com/file/d/1z7mwvxttnTc4xkawK1POqBeBmuPhct9T/view?usp=sharing)  
 - [demoLink2](https://drive.google.com/file/d/1zhXC3JljWWTkZ_oW4Sas3wwWWfN8pTe6/view?usp=sharing)  
 
+### Note:
+1. We wanted to do direct deloyment of our server through render and client through vercel and so we ran the render deployment on free tier and due to the storage size limitation the deployment broke!!, teh large size is due to intial model loading, even though it loads only once, still its not doable through free tier :(
 
+2. But we will try deploy it next year on paid version or some other way which mostly requires a paid plan !
 
 ## Features  
 - Real-time **code execution** via **Piston API**.
