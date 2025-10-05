@@ -1,10 +1,10 @@
-# CodeSmart
+## CodeSmart
 
 A full-stack web application in which users can **practice coding questions** under contest style constraints that enables **real-time code execution** and provides **AI-driven feedback** on time and space complexity and code improvement suggestions at the end of test.  
 Built for **students, competitive programmers, and developers** who want instant execution, contest-style practice, and intelligent code analysis.  
 
 
-## Demo  
+### Demo  
 - [demoLink1](https://drive.google.com/file/d/1z7mwvxttnTc4xkawK1POqBeBmuPhct9T/view?usp=sharing)  
 - [demoLink2](https://drive.google.com/file/d/1zhXC3JljWWTkZ_oW4Sas3wwWWfN8pTe6/view?usp=sharing)  
 
@@ -13,7 +13,7 @@ Built for **students, competitive programmers, and developers** who want instant
 
 2. But we will try deploy it next year on paid version or some other way which mostly requires a paid plan !
 
-## Features  
+### Features  
 - Real-time **code execution** via **Piston API**.
 - **Contest-style timers** and **resizable editor panels** for an interactive workspace.
 - AI-powered **time/space complexity analysis** using a fine-tuned **CodeT5 model** deployed on Hugging Face.
@@ -22,7 +22,7 @@ Built for **students, competitive programmers, and developers** who want instant
 
 
 
-## Tech Stack
+### Tech Stack
 
 
 - **Frontend:** React (Vite)  
@@ -33,7 +33,7 @@ Built for **students, competitive programmers, and developers** who want instant
 
 
 
-## ML & AI Contributions
+### ML & AI Contributions
 
 
 - Processed and cleaned dataset of **~5000 coding questions**  
@@ -43,7 +43,7 @@ Built for **students, competitive programmers, and developers** who want instant
 
 
 
-## Used By
+### Used By
 
 
 - Students preparing for coding interviews  
@@ -52,7 +52,7 @@ Built for **students, competitive programmers, and developers** who want instant
 
 
 
-## FAQ
+### FAQ
 
 
 **Q: How does CodeSmart analyze time & space complexity?**  
