@@ -2,7 +2,7 @@ import axios from "axios";
 import { LANGUAGE_VERSIONS } from "../constants";
 
 const API = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: "http://localhost:8080",
 });
 
 export const evaluateRunCode = async (language, sourceCode, examples) => {
