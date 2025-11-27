@@ -1,17 +1,19 @@
-# CodeSmart
+## CodeSmart
 
-A full-stack web application that enables **real-time code execution** and provides **AI-driven feedback** on time and space complexity and code improvement suggestions.  
+A full-stack web application in which users can **practice coding questions** under contest style constraints that enables **real-time code execution** and provides **AI-driven feedback** on time and space complexity and code improvement suggestions at the end of test.  
 Built for **students, competitive programmers, and developers** who want instant execution, contest-style practice, and intelligent code analysis.  
 
 
-
-## Demo  
+### Demo  
 - [demoLink1](https://drive.google.com/file/d/1z7mwvxttnTc4xkawK1POqBeBmuPhct9T/view?usp=sharing)  
 - [demoLink2](https://drive.google.com/file/d/1zhXC3JljWWTkZ_oW4Sas3wwWWfN8pTe6/view?usp=sharing)  
 
+### Note:
+1. We wanted to do direct deloyment of our server through render and client through vercel and so we ran the render deployment on free tier and due to the storage size limitation the deployment broke!!, teh large size is due to intial model loading, even though it loads only once, still its not doable through free tier :(
 
+2. But we will try deploy it next year on paid version or some other way which mostly requires a paid plan !
 
-## Features  
+### Features  
 - Real-time **code execution** via **Piston API**.
 - **Contest-style timers** and **resizable editor panels** for an interactive workspace.
 - AI-powered **time/space complexity analysis** using a fine-tuned **CodeT5 model** deployed on Hugging Face.
@@ -20,18 +22,18 @@ Built for **students, competitive programmers, and developers** who want instant
 
 
 
-## Tech Stack
+### Tech Stack
 
 
 - **Frontend:** React (Vite)  
 - **Backend:** FastAPI, SQLAlchemy  
 - **AI Models:** Fine-tuned CodeT5 (Hugging Face), Google Gemini GenAI  
 - **Execution Engine:** Piston API  
-- **Database:** Local DB initially
+- **Database:** Initially used a local SQLite database, later migrated to PostgreSQL hosted on Render (free tier)
 
 
 
-## ML & AI Contributions
+### ML & AI Contributions
 
 
 - Processed and cleaned dataset of **~5000 coding questions**  
@@ -41,7 +43,7 @@ Built for **students, competitive programmers, and developers** who want instant
 
 
 
-## Used By
+### Used By
 
 
 - Students preparing for coding interviews  
@@ -50,19 +52,18 @@ Built for **students, competitive programmers, and developers** who want instant
 
 
 
-## FAQ
+### FAQ
 
 
 **Q: How does CodeSmart analyze time & space complexity?**  
 A: Code is passed to a fine-tuned CodeT5 model on Hugging Face, enhanced with Gemini GenAI for detailed feedback.  
 
 **Q: What languages are supported?**  
-A: All languages supported by **Piston API** (C++, Python, Java, JavaScript, etc.).  
+A: All languages supported by **Piston API**, but for simplcity the code editor allows only python, C++, java.  
 
 
 
 ## Authors
-
 
 - [@SomrimaSaha](https://github.com/somrima-09)  
 - [@MeghanaJammu](https://github.com/MeghanaJammu)
