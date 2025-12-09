@@ -67,4 +67,3 @@ A: All languages supported by **Piston API**, but for simplcity the code editor 
 
 - [@SomrimaSaha](https://github.com/somrima-09)  
 - [@MeghanaJammu](https://github.com/MeghanaJammu)
-- [@ShikharMishra1](https://github.com/ShikharMishra16)
